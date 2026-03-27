@@ -4,6 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon ./src/server.js",
+    "migrate": "node-pg-migrate",
     "lint": "eslint ./src"
   },
   "type": "module",
@@ -20,8 +21,11 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "joi": "^18.1.1",
-    "nanoid": "^5.1.6"
+    "nanoid": "^5.1.6",
+    "node-pg-migrate": "^8.0.4",
+    "pg": "^8.20.0"
   }
 }
