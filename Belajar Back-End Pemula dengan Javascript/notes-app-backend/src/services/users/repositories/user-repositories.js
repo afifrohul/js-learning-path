@@ -36,7 +36,7 @@ class UserRepositories {
 
   async getUserById(id) {
     const query = {
-      text: 'SELECT id, username, fullname FROM users WHERE id = $1',
+      text: 'SELECT id, username, fullname, created_at, updated_at FROM users WHERE id = $1',
       values:[id],
     };
 
@@ -51,7 +51,7 @@ class UserRepositories {
       values: [username],
     };
 
-    const user = await this._pool.query(query);
+    const user = await this.pool.query(query);
     if (!user) {
       return null;
     }
