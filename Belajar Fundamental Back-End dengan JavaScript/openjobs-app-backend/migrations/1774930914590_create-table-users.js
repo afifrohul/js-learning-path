@@ -27,6 +27,10 @@ export const up = (pgm) => {
       type: "VARCHAR(50)",
       notNull: true,
     },
+    role: {
+      type: "VARCHAR(50)",
+      notNull: true,
+    },
     created_at: {
       type: "TIMESTAMP",
       notNull: true,

@@ -3,12 +3,13 @@ import response from "../../../utils/response.js";
 import UserRepositories from "../repositories/user-repositories.js";
 
 export const createUser = async (req, res, next) => {
-  const { email, password, name } = req.validated;
+  const { email, password, name, role } = req.validated;
 
   const user = await UserRepositories.createUser({
     email,
     password,
     name,
+    role,
   });
 
   if (!user) {

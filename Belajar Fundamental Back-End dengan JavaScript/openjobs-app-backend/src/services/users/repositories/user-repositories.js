@@ -7,15 +7,15 @@ class UserRepositories {
     this.pool = new Pool();
   }
 
-  async createUser({ email, password, name }) {
+  async createUser({ email, password, name, role }) {
     const id = nanoid(16);
     const hashedPassword = await bcrypt.hash(password, 10);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
     const query = {
-      text: "INSERT INTO users VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
-      values: [id, email, hashedPassword, name, createdAt, updatedAt],
+      text: "INSERT INTO users VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+      values: [id, email, hashedPassword, name, role, createdAt, updatedAt],
     };
 
     const result = await this.pool.query(query);
