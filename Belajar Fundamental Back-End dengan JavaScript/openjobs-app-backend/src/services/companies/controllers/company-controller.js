@@ -10,13 +10,13 @@ export const getCompanies = async (req, res) => {
 
 export const getCompanyById = async (req, res, next) => {
   const { id } = req.params;
-  const category = await CompanyRepositories.getCompanyById(id);
+  const company = await CompanyRepositories.getCompanyById(id);
 
-  if (!category) {
+  if (!company) {
     return next(new NotFoundError("Perusahaan tidak ditemukan"));
   }
 
-  return response(res, 200, "Perusahaan sukses ditampilkan", category);
+  return response(res, 200, "Perusahaan sukses ditampilkan", company);
 };
 
 export const createCompany = async (req, res, next) => {
