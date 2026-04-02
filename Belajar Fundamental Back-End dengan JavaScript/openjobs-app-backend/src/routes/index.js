@@ -1,4 +1,4 @@
-import { application, Router } from "express";
+import { Router } from "express";
 
 import users from "../services/users/routes/index.js";
 import authentications from "../services/authentications/routes/index.js";

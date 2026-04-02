@@ -47,9 +47,9 @@ class UserRepositories {
     }
 
     const { id, password: hashedPassword } = user.rows[0];
-    const isPasswordNatch = await bcrypt.compare(password, hashedPassword);
+    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
 
-    if (!isPasswordNatch) {
+    if (!isPasswordMatch) {
       return null;
     }
 

@@ -2,7 +2,7 @@ import { InvariantError, NotFoundError } from "../../../exceptions/index.js";
 import response from "../../../utils/response.js";
 import ProfilesRepositories from "../repositories/profile-repositories.js";
 
-export const getProfile = async (req, res) => {
+export const getProfile = async (req, res, next) => {
   const { id: userId } = req.user;
   const profile = await ProfilesRepositories.getProfile(userId);
 
