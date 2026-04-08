@@ -14,6 +14,10 @@ export const up = (pgm) => {
       type: "VARCHAR(50)",
       primaryKey: true,
     },
+    user_id: {
+      type: "VARCHAR(50)",
+      notNull: true,
+    },
     name: {
       type: "VARCHAR(50)",
       notNull: true,
@@ -35,6 +39,12 @@ export const up = (pgm) => {
       notNull: true,
     },
   });
+
+  pgm.addConstraint(
+    "companies",
+    "fk_users.user_id_users.id",
+    "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE",
+  );
 };
 
 /**

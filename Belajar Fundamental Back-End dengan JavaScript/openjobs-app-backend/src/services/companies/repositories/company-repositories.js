@@ -25,14 +25,14 @@ class CompanyRepositories {
     return result.rows[0];
   }
 
-  async createCompany({ name, location, description }) {
+  async createCompany({ user_id, name, location, description }) {
     const id = nanoid(16);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
     const query = {
-      text: "INSERT INTO companies(id, name, location, description, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
-      values: [id, name, location, description, createdAt, updatedAt],
+      text: "INSERT INTO companies(id, user_id, name, location, description, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+      values: [id, user_id, name, location, description, createdAt, updatedAt],
     };
 
     const result = await this.pool.query(query);

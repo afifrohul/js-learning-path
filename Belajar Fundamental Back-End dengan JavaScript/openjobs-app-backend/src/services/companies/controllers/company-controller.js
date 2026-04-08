@@ -20,9 +20,11 @@ export const getCompanyById = async (req, res, next) => {
 };
 
 export const createCompany = async (req, res, next) => {
+  const { id: user_id } = req.user;
   const { name, location, description } = req.validated;
 
   const company = await CompanyRepositories.createCompany({
+    user_id,
     name,
     location,
     description,
