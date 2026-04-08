@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   uploadDocuments,
   getDocumentById,
+  deleteDocumentById,
 } from "../controller/upload-controller.js";
 import authenticateToken from "../../../middlewares/auth.js";
 import { upload } from "../storage/storage-config.js";
@@ -14,10 +15,7 @@ router.post(
   upload.single("document"),
   uploadDocuments,
 );
-
-router.get("/documents/:id",
-  // authenticateToken, 
-  getDocumentById
-);
+router.get("/documents/:id", getDocumentById);
+router.delete("/documents/:id", authenticateToken, deleteDocumentById);
 
 export default router;

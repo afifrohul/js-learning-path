@@ -1,6 +1,9 @@
 import { ClientError, NotFoundError } from "../../../exceptions/index.js";
 import response from "../../../utils/response.js";
 import UploadRepositories from "../repositories/upload-repositories.js";
+import fs from "fs";
+import path from "path";
+import { UPLOAD_FOLDER } from "../storage/storage-config.js";
 
 export const uploadDocuments = async (req, res, next) => {
   const { id: user_id } = req.user;
@@ -33,8 +36,9 @@ export const getDocumentById = async (req, res, next) => {
   const document = await UploadRepositories.getDocumentById(id);
 
   if (!document) {
-    return next(new NotFoundError("Document tidak ditemukan"));
+    return next(new NotFoundError("Dokumen tidak ditemukan"));
   }
+  const filePath = `src/services/uploads/files/documents/${document.name}`;
 
   res.set("Content-Disposition", `attachment; filename="${document.name}"`);
 
@@ -47,4 +51,30 @@ export const getDocumentById = async (req, res, next) => {
       if (err) console.error(err);
     },
   );
+};
+
+export const deleteDocumentById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const document = await UploadRepositories.getDocumentById(id);
+
+    if (!document) {
+      return next(new NotFoundError("Dokumen tidak ditemukan"));
+    }
+
+    // path file di disk
+    const filePath = path.join(UPLOAD_FOLDER, document.name);
+
+    // hapus file jika ada
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    const deletedDocument = await UploadRepositories.deleteDocumentById(id);
+
+    return response(res, 200, "Dokumen berhasil dihapus", deletedDocument);
+  } catch (error) {
+    return next(error);
+  }
 };
