@@ -86,6 +86,16 @@ class ApplicationRepositories {
     }
   }
 
+  async isExistApplication({ user_id, job_id }) {
+    const query = {
+      text: "SELECT id FROM applications WHERE user_id = $1 AND job_id = $2",
+      values: [user_id, job_id],
+    };
+
+    const result = await this.pool.query(query);
+    return result.rows.length > 0;
+  }
+
   async createApplication({ user_id, job_id, status }) {
     const id = nanoid(16);
     const createdAt = new Date().toISOString();
@@ -99,7 +109,7 @@ class ApplicationRepositories {
       status, 
       created_at, 
       updated_at
-      ) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`,
+      ) VALUES($1, $2, $3, $4, $5, $6) RETURNING id, user_id, job_id, status`,
       values: [id, user_id, job_id, status, createdAt, updatedAt],
     };
 

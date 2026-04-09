@@ -1,5 +1,6 @@
 import { InvariantError, NotFoundError } from "../../../exceptions/index.js";
 import response from "../../../utils/response.js";
+import NotificationService from "../producers/notification-service.js";
 import ApplicationRepositories from "../repositories/application-repositories.js";
 
 export const getApplications = async (req, res) => {
@@ -48,6 +49,15 @@ export const getApplicationsByJobId = async (req, res) => {
 export const createApplication = async (req, res, next) => {
   const { user_id, job_id, status } = req.validated;
 
+  const isExist = await ApplicationRepositories.isExistApplication({
+    user_id,
+    job_id,
+  });
+
+  if (isExist) {
+    return next(new InvariantError("Anda sudah melamar pekerjaan ini"));
+  }
+
   const application = await ApplicationRepositories.createApplication({
     user_id,
     job_id,
@@ -57,6 +67,15 @@ export const createApplication = async (req, res, next) => {
   if (!application) {
     return next(new InvariantError("Apply pekerjaan gagal ditambahkan"));
   }
+
+  const message = {
+    applicationId: application.id,
+  };
+
+  await NotificationService.sendMessage(
+    "notification:applications",
+    JSON.stringify(message),
+  );
 
   return response(
     res,
