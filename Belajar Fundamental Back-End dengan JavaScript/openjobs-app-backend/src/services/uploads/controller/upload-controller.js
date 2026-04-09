@@ -31,6 +31,14 @@ export const uploadDocuments = async (req, res, next) => {
   });
 };
 
+export const getDocuments = async (req, res) => {
+  const documents = await UploadRepositories.getDocuments();
+
+  return response(res, 200, "Bookmark sukses ditampilkan", {
+    documents,
+  });
+};
+
 export const getDocumentById = async (req, res, next) => {
   const { id } = req.params;
   const document = await UploadRepositories.getDocumentById(id);

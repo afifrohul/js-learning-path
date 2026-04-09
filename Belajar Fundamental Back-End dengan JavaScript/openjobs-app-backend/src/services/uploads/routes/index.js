@@ -3,6 +3,7 @@ import {
   uploadDocuments,
   getDocumentById,
   deleteDocumentById,
+  getDocuments,
 } from "../controller/upload-controller.js";
 import authenticateToken from "../../../middlewares/auth.js";
 import { upload } from "../storage/storage-config.js";
@@ -15,6 +16,7 @@ router.post(
   upload.single("document"),
   uploadDocuments,
 );
+router.get("/documents", getDocuments);
 router.get("/documents/:id", getDocumentById);
 router.delete("/documents/:id", authenticateToken, deleteDocumentById);
 

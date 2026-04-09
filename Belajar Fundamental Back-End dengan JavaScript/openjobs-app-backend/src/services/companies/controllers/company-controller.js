@@ -3,19 +3,21 @@ import response from "../../../utils/response.js";
 import CompanyRepositories from "../repositories/company-repositories.js";
 
 export const getCompanies = async (req, res) => {
-  const companies = await CompanyRepositories.getCompanies();
+  const { companies, source } = await CompanyRepositories.getCompanies();
 
+  res.setHeader("X-Data-Source", source);
   return response(res, 200, "Perusahaan sukses ditampilkan", { companies });
 };
 
 export const getCompanyById = async (req, res, next) => {
   const { id } = req.params;
-  const company = await CompanyRepositories.getCompanyById(id);
+  const { company, source } = await CompanyRepositories.getCompanyById(id);
 
   if (!company) {
     return next(new NotFoundError("Perusahaan tidak ditemukan"));
   }
 
+  res.setHeader("X-Data-Source", source);
   return response(res, 200, "Perusahaan sukses ditampilkan", company);
 };
 

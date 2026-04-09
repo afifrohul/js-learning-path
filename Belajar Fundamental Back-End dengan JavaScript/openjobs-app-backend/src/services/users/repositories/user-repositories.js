@@ -1,10 +1,12 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
 import bcrypt from "bcrypt";
+import CacheService from "../../../cache/redis-service.js";
 
 class UserRepositories {
   constructor() {
     this.pool = new Pool();
+    this.cacheService = new CacheService();
   }
 
   async createUser({ email, password, name, role }) {
@@ -24,14 +26,27 @@ class UserRepositories {
   }
 
   async getUserById(id) {
-    const query = {
-      text: "SELECT id, email, name, created_at, updated_at FROM users WHERE id = $1",
-      values: [id],
-    };
+    const cacheKey = `user:${id}`;
 
-    const result = await this.pool.query(query);
+    try {
+      const result = await this.cacheService.get(cacheKey);
+      const source = "cache";
+      return { user: JSON.parse(result), source };
+    } catch (error) {
+      const query = {
+        text: "SELECT id, email, name, created_at, updated_at FROM users WHERE id = $1",
+        values: [id],
+      };
 
-    return result.rows[0];
+      const result = await this.pool.query(query);
+      const source = "database";
+
+      if (result.rows[0] !== undefined) {
+        await this.cacheService.set(cacheKey, JSON.stringify(result.rows[0]));
+      }
+
+      return { user: result.rows[0], source };
+    }
   }
 
   async verifyUserCredential(email, password) {

@@ -26,11 +26,11 @@ router.post(
 router.get("/applications", authenticateToken, getApplications);
 router.get("/applications/:id", authenticateToken, getApplicationById);
 router.get(
-  "/applications/user/:id",
+  "/applications/user/:userId",
   authenticateToken,
   getApplicationsByUserId,
 );
-router.get("/applications/job/:id", authenticateToken, getApplicationsByJobId);
+router.get("/applications/job/:jobId", authenticateToken, getApplicationsByJobId);
 router.put(
   "/applications/:id",
   authenticateToken,

@@ -8,7 +8,7 @@ class JobRepositories {
 
   async getJobs(title, company_name) {
     let baseQuery = `
-      SELECT jobs.*, companies.name AS company_name
+      SELECT jobs.id, jobs.company_id, jobs.category_id, jobs.title, jobs.description, jobs.job_type, jobs.experience_level, jobs.location_type, jobs.location_city, jobs.status, jobs.salary_min, jobs.salary_max, companies.name AS company_name
       FROM jobs
       LEFT JOIN companies ON jobs.company_id = companies.id
     `;

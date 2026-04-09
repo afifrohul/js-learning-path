@@ -21,6 +21,15 @@ class UploadRepositories {
     return result.rows[0];
   }
 
+  async getDocuments() {
+    const query = {
+      text: "SELECT * FROM documents",
+    };
+
+    const result = await this.pool.query(query);
+    return result.rows;
+  }
+
   async getDocumentById(id) {
     const query = {
       text: "SELECT * FROM documents WHERE id = $1",

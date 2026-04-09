@@ -1,28 +1,53 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
+import CacheService from "../../../cache/redis-service.js";
 
 class CompanyRepositories {
   constructor() {
     this.pool = new Pool();
+    this.cacheService = new CacheService();
   }
 
   async getCompanies() {
-    const query = {
-      text: "SELECT * FROM companies",
-    };
+    const cacheKey = "companies";
 
-    const result = await this.pool.query(query);
-    return result.rows;
+    try {
+      const result = await this.cacheService.get(cacheKey);
+      const source = "cache";
+      return { companies: JSON.parse(result), source };
+    } catch (error) {
+      const query = {
+        text: "SELECT id, user_id, name, location, description, created_at FROM companies",
+      };
+
+      const result = await this.pool.query(query);
+      const source = "database";
+      await this.cacheService.set(cacheKey, JSON.stringify(result.rows));
+      return { companies: result.rows, source };
+    }
   }
 
   async getCompanyById(id) {
-    const query = {
-      text: "SELECT * FROM companies WHERE id = $1",
-      values: [id],
-    };
+    const cacheKey = `company:${id}`;
 
-    const result = await this.pool.query(query);
-    return result.rows[0];
+    try {
+      const result = await this.cacheService.get(cacheKey);
+      const source = "cache";
+      return { company: JSON.parse(result), source };
+    } catch (error) {
+      const query = {
+        text: "SELECT * FROM companies WHERE id = $1",
+        values: [id],
+      };
+
+      const result = await this.pool.query(query);
+      const source = "database";
+
+      if (result.rows[0] !== undefined) {
+        await this.cacheService.set(cacheKey, JSON.stringify(result.rows[0]));
+      }
+      return { company: result.rows[0], source };
+    }
   }
 
   async createCompany({ user_id, name, location, description }) {
@@ -36,7 +61,7 @@ class CompanyRepositories {
     };
 
     const result = await this.pool.query(query);
-
+    await this.cacheService.delete("companies");
     return result.rows[0];
   }
 
@@ -49,7 +74,7 @@ class CompanyRepositories {
     };
 
     const result = await this.pool.query(query);
-
+    await this.cacheService.delete(`company:${id}`);
     return result.rows[0];
   }
 
@@ -60,6 +85,7 @@ class CompanyRepositories {
     };
 
     const result = await this.pool.query(query);
+    await this.cacheService.delete(`company:${id}`);
     return result.rows[0];
   }
 }

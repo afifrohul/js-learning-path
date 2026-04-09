@@ -12,20 +12,23 @@ export const getApplications = async (req, res) => {
 
 export const getApplicationById = async (req, res, next) => {
   const { id } = req.params;
-  const application = await ApplicationRepositories.getApplicationById(id);
+  const { application, source } =
+    await ApplicationRepositories.getApplicationById(id);
 
   if (!application) {
     return next(new NotFoundError("Apply pekerjaan tidak ditemukan"));
   }
 
+  res.setHeader("X-Data-Source", source);
   return response(res, 200, "Apply pekerjaan sukses ditampilkan", application);
 };
 
 export const getApplicationsByUserId = async (req, res) => {
   const { userId } = req.params;
-  const applications =
+  const { applications, source } =
     await ApplicationRepositories.getApplicationsByUserId(userId);
 
+  res.setHeader("X-Data-Source", source);
   return response(res, 200, "Apply pekerjaan sukses ditampilkan", {
     applications,
   });
@@ -33,9 +36,10 @@ export const getApplicationsByUserId = async (req, res) => {
 
 export const getApplicationsByJobId = async (req, res) => {
   const { jobId } = req.params;
-  const applications =
+  const { applications, source } =
     await ApplicationRepositories.getApplicationsByJobId(jobId);
 
+  res.setHeader("X-Data-Source", source);
   return response(res, 200, "Apply pekerjaan sukses ditampilkan", {
     applications,
   });
