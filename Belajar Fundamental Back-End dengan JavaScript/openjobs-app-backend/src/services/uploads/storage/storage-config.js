@@ -14,7 +14,7 @@ if (!fs.existsSync(UPLOAD_FOLDER)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_FOLDER),
-  
+
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
@@ -27,7 +27,7 @@ export const upload = multer({
     if (file.mimetype === "application/pdf") {
       cb(null, true);
     } else {
-      cb(new ClientError("Only .pdf files are allowed!"), false);
+      cb(new ClientError("File is required."), false);
     }
   },
 });
