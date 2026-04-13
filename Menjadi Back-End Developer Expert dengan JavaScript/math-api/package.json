@@ -1,0 +1,21 @@
+{
+  "name": "math-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --watch"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitest/eslint-plugin": "^1.6.15",
+    "eslint": "^10.2.0",
+    "eslint-config-dicodingacademy": "^0.9.5",
+    "globals": "^17.5.0",
+    "vitest": "^4.1.4"
+  }
+}
