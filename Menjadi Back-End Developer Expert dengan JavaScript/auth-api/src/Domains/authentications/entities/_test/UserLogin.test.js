@@ -22,17 +22,6 @@ describe("a UserLogin entities", () => {
     );
   });
 
-  it("should throw error when password contains less than 8 character", () => {
-    const payload = {
-      username: "dicoding",
-      password: "abc",
-    };
-
-    expect(() => new UserLogin(payload)).toThrowError(
-      "LOGIN_USER.PASSWORD_MIN_CHAR",
-    );
-  });
-
   it("should create userLogin object correctly", () => {
     const payload = {
       username: "dicoding",

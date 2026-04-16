@@ -19,6 +19,12 @@ DomainErrorTranslator._directories = {
   "REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER": new InvariantError(
     "tidak dapat membuat user baru karena username mengandung karakter terlarang",
   ),
+  "LOGIN_USER.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat membuat user baru karena properti yang dibutuhkan tidak ada",
+  ),
+  "LOGIN_USER.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat membuat user baru karena tipe data tidak sesuai",
+  ),
 };
 
 export default DomainErrorTranslator;

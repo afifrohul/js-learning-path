@@ -17,23 +17,33 @@ describe("BcryptPasswordHash", () => {
       expect(encryptedPassword).not.toEqual("plain_password");
       expect(spyHash).toBeCalledWith("plain_password", 10); // 10 adalah nilai saltRound default untuk BcryptPasswordHash
     });
+  });
 
-    it("should compare password correctly", async () => {
+  describe("compare function", () => {
+    it("should not throw error when password match", async () => {
       // Arrange
       const spyCompare = vi.spyOn(bcrypt, "compare");
       const bcryptPasswordHash = new BcryptPasswordHash(bcrypt);
       const plainPassword = "plain_password";
       const hashedPassword = await bcryptPasswordHash.hash(plainPassword);
 
-      // Action
-      const isMatch = await bcryptPasswordHash.compare(
-        plainPassword,
-        hashedPassword,
-      );
+      // Action & Assert
+      await expect(
+        bcryptPasswordHash.compare(plainPassword, hashedPassword),
+      ).resolves.not.toThrow();
 
-      // Assert
-      expect(isMatch).toBe(true);
       expect(spyCompare).toBeCalledWith(plainPassword, hashedPassword);
+    });
+
+    it("should throw error when password not match", async () => {
+      // Arrange
+      const bcryptPasswordHash = new BcryptPasswordHash(bcrypt);
+      const hashedPassword = await bcryptPasswordHash.hash("correct_password");
+
+      // Action & Assert
+      await expect(
+        bcryptPasswordHash.compare("wrong_password", hashedPassword),
+      ).rejects.toThrowError();
     });
   });
 });

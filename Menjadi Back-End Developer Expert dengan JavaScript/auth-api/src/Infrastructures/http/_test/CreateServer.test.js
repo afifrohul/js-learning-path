@@ -1,6 +1,7 @@
 import request from "supertest";
 import pool from "../../database/postgres/pool.js";
 import UsersTableTestHelper from "../../../../tests/UsersTableTestHelper.js";
+import AuthenticationsTableTestHelper from "../../../../tests/AuthenticationsTableTestHelper.js";
 import container from "../../container.js";
 import createServer from "../CreateServer.js";
 
@@ -11,6 +12,7 @@ describe("HTTP server", () => {
 
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
+    await AuthenticationsTableTestHelper.cleanTable();
   });
 
   describe("when POST /users", () => {
@@ -145,6 +147,84 @@ describe("HTTP server", () => {
       expect(response.body.message).toEqual(
         "terjadi kegagalan pada server kami",
       );
+    });
+  });
+
+  describe("when POST /authentications", () => {
+    it("should response 201 and persisted refresh token", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const requestPayload = {
+        username: "dicoding",
+        password: "secret123",
+      };
+
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .post("/authentications")
+        .send(requestPayload);
+
+      // Assert
+      expect(response.status).toEqual(201);
+      expect(response.body.status).toEqual("success");
+      expect(response.body.data.accessToken).toBeDefined();
+      expect(response.body.data.refreshToken).toBeDefined();
+
+      const tokens = await AuthenticationsTableTestHelper.findToken(
+        response.body.data.refreshToken,
+      );
+      expect(tokens).toHaveLength(1);
+    });
+
+    it("should response 400 when username not found", async () => {
+      // Arrange
+      const requestPayload = {
+        username: "dicoding",
+        password: "secret123",
+      };
+
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .post("/authentications")
+        .send(requestPayload);
+
+      // Assert
+      expect(response.status).toEqual(400);
+      expect(response.body.status).toEqual("fail");
+    });
+
+    it("should response 401 when password is wrong", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const requestPayload = {
+        username: "dicoding",
+        password: "wrongpassword",
+      };
+
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .post("/authentications")
+        .send(requestPayload);
+
+      // Assert
+      expect(response.status).toEqual(401);
+      expect(response.body.status).toEqual("fail");
     });
   });
 });

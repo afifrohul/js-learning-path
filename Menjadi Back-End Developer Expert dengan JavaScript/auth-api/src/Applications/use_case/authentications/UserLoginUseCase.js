@@ -1,4 +1,4 @@
-import UserLogin from "../../../Domains/authentications/entities/UserLogin";
+import UserLogin from "../../../Domains/authentications/entities/UserLogin.js";
 
 class UserLoginUseCase {
   constructor({
@@ -22,8 +22,12 @@ class UserLoginUseCase {
 
     await this._passwordHash.compare(userLogin.password, user.password);
 
-    const accessToken = this._tokenManager.createAccessToken({ id: user.id });
-    const refreshToken = this._tokenManager.createRefreshToken({ id: user.id });
+    const accessToken = await this._tokenManager.createAccessToken({
+      id: user.id,
+    });
+    const refreshToken = await this._tokenManager.createRefreshToken({
+      id: user.id,
+    });
 
     await this._authenticationRepository.addRefreshToken(refreshToken);
 
