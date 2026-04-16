@@ -19,6 +19,8 @@ import JwtTokenManager from "./security/JwtTokenManager.js";
 // use case
 import AddUserUseCase from "../Applications/use_case/users/AddUserUseCase.js";
 import UserLoginUseCase from "../Applications/use_case/authentications/UserLoginUseCase.js";
+import RefreshAuthenticationUseCase from "../Applications/use_case/authentications/RefreshAuthenticationUseCase.js";
+import UserLogoutUseCase from "../Applications/use_case/authentications/UserLogoutUseCase.js";
 import PasswordHash from "../Applications/security/PasswordHash.js";
 import TokenManager from "../Applications/security/TokenManager.js";
 
@@ -113,6 +115,36 @@ container.register([
           name: "tokenManager",
           internal: TokenManager.name,
         },
+        {
+          name: "authenticationRepository",
+          internal: AuthenticationRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: RefreshAuthenticationUseCase.name,
+    Class: RefreshAuthenticationUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "tokenManager",
+          internal: TokenManager.name,
+        },
+        {
+          name: "authenticationRepository",
+          internal: AuthenticationRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: UserLogoutUseCase.name,
+    Class: UserLogoutUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
         {
           name: "authenticationRepository",
           internal: AuthenticationRepository.name,

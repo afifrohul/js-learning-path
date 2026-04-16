@@ -232,4 +232,109 @@ describe("HTTP server", () => {
       expect(response.body.status).toEqual("fail");
     });
   });
+
+  describe("when PUT /authentications", () => {
+    it("should response 200 and update access token", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const requestPayload = {
+        username: "dicoding",
+        password: "secret123",
+      };
+
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .post("/authentications")
+        .send(requestPayload);
+
+      const refreshToken = response.body.data.refreshToken;
+
+      const putResponse = await request(app)
+        .put("/authentications")
+        .send({ refreshToken });
+
+      expect(putResponse.status).toEqual(200);
+      expect(putResponse.body.status).toEqual("success");
+      expect(putResponse.body.data.accessToken).toBeDefined();
+    });
+
+    it("should response 400 when refresh token not found", async () => {
+      // Arrange
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .put("/authentications")
+        .send({ refreshToken: "invalidtoken" });
+
+      // Assert
+      expect(response.status).toEqual(400);
+      expect(response.body.status).toEqual("fail");
+      expect(response.body.message).toEqual("refresh token tidak valid");
+    });
+  });
+
+  describe("when DELETE /authentications", () => {
+    it("should response 200 and delete refresh token", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const requestPayload = {
+        username: "dicoding",
+        password: "secret123",
+      };
+
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .post("/authentications")
+        .send(requestPayload);
+
+      const refreshToken = response.body.data.refreshToken;
+
+      const deleteResponse = await request(app)
+        .delete("/authentications")
+        .send({ refreshToken });
+
+      // Assert
+      expect(deleteResponse.status).toEqual(200);
+      expect(deleteResponse.body.status).toEqual("success");
+      expect(deleteResponse.body.message).toEqual(
+        "Refresh token berhasil dihapus",
+      );
+
+      const tokens =
+        await AuthenticationsTableTestHelper.findToken(refreshToken);
+      expect(tokens).toHaveLength(0);
+    });
+
+    it("should response 400 when refresh token not found", async () => {
+      // Arrange
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app)
+        .delete("/authentications")
+        .send({ refreshToken: "invalidtoken" });
+
+      // Assert
+      expect(response.status).toEqual(400);
+      expect(response.body.status).toEqual("fail");
+      expect(response.body.message).toEqual(
+        "refresh token tidak ditemukan di database",
+      );
+    });
+  });
 });
