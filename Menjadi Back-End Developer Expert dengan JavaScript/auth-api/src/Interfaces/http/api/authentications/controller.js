@@ -1,6 +1,7 @@
 import UserLoginUseCase from "../../../../Applications/use_case/authentications/UserLoginUseCase.js";
 import UserLogoutUseCase from "../../../../Applications/use_case/authentications/UserLogoutUseCase.js";
 import RefreshAuthenticationUseCase from "../../../../Applications/use_case/authentications/RefreshAuthenticationUseCase.js";
+import response from "../../../../Commons/utils/response.js";
 
 class AuthenticationController {
   constructor(container) {
@@ -15,10 +16,7 @@ class AuthenticationController {
     const userLoginUseCase = this._container.getInstance(UserLoginUseCase.name);
     const loggedUser = await userLoginUseCase.execute(req.body);
 
-    res.status(201).json({
-      status: "success",
-      data: loggedUser,
-    });
+    return response(res, 201, "Login berhasil", loggedUser);
   }
 
   async refreshAuthentication(req, res) {
@@ -32,11 +30,7 @@ class AuthenticationController {
       refreshToken,
     });
 
-    res.status(200).json({
-      status: "success",
-      message: "Access token berhasil diperbarui",
-      data: accessToken,
-    });
+    return response(res, 200, "Access token berhasil diperbarui", accessToken);
   }
 
   async logout(req, res) {
@@ -47,10 +41,11 @@ class AuthenticationController {
     );
     await userLogoutUseCase.execute({ refreshToken });
 
-    res.status(200).json({
-      status: "success",
-      message: "Refresh token berhasil dihapus",
-    });
+    return response(
+      res,
+      200,
+      "Logout berhasil. Refresh token berhasil dihapus",
+    );
   }
 }
 

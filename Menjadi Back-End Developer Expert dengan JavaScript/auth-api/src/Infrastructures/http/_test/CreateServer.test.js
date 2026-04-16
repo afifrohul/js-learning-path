@@ -312,7 +312,7 @@ describe("HTTP server", () => {
       expect(deleteResponse.status).toEqual(200);
       expect(deleteResponse.body.status).toEqual("success");
       expect(deleteResponse.body.message).toEqual(
-        "Refresh token berhasil dihapus",
+        "Logout berhasil. Refresh token berhasil dihapus",
       );
 
       const tokens =

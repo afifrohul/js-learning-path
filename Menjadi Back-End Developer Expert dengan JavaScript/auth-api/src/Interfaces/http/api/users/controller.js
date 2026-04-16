@@ -1,4 +1,5 @@
 import AddUserUseCase from "../../../../Applications/use_case/users/AddUserUseCase.js";
+import response from "../../../../Commons/utils/response.js";
 
 class UsersController {
   constructor(container) {
@@ -11,12 +12,7 @@ class UsersController {
     const addUserUseCase = this._container.getInstance(AddUserUseCase.name);
     const addedUser = await addUserUseCase.execute(req.body);
 
-    res.status(201).json({
-      status: "success",
-      data: {
-        addedUser,
-      },
-    });
+    return response(res, 201, "User berhasil ditambahkan", { addedUser });
   }
 }
 
