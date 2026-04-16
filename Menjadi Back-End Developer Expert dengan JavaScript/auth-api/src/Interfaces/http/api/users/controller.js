@@ -1,4 +1,4 @@
-import AddUserUseCase from "../../../../Applications/use_case/AddUserUseCase.js";
+import AddUserUseCase from "../../../../Applications/use_case/users/AddUserUseCase.js";
 
 class UsersController {
   constructor(container) {

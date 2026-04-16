@@ -1,3 +1,4 @@
+import { it } from "vitest";
 import UsersTableTestHelper from "../../../../tests/UsersTableTestHelper.js";
 import InvariantError from "../../../Commons/exceptions/InvariantError.js";
 import RegisterUser from "../../../Domains/users/entities/RegisterUser.js";
@@ -83,6 +84,36 @@ describe("UserRepositoryPostgres", () => {
           fullname: "Dicoding Indonesia",
         }),
       );
+    });
+  });
+
+  describe("getPasswordByUsername function", () => {
+    it("should return id and password correctly", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        username: "dicoding",
+        password: "secret_password",
+        fullname: "Dicoding Indonesia",
+      });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action
+      const { id, password } =
+        await userRepositoryPostgres.getPasswordByUsername("dicoding");
+
+      // Assert
+      expect(id).toBe("user-123");
+      expect(password).toBe("secret_password");
+    });
+
+    it("should throw InvariantError when username not found", async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(
+        userRepositoryPostgres.getPasswordByUsername("dicoding"),
+      ).rejects.toThrowError(InvariantError);
     });
   });
 });
