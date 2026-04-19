@@ -20,10 +20,16 @@ DomainErrorTranslator._directories = {
     "tidak dapat membuat user baru karena username mengandung karakter terlarang",
   ),
   "LOGIN_USER.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
-    "tidak dapat membuat user baru karena properti yang dibutuhkan tidak ada",
+    "tidak dapat login karena properti yang dibutuhkan tidak ada",
   ),
   "LOGIN_USER.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
-    "tidak dapat membuat user baru karena tipe data tidak sesuai",
+    "tidak dapat login karena tipe data tidak sesuai",
+  ),
+  "ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat membuat thread baru karena properti yang dibutuhkan tidak ada",
+  ),
+  "ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat membuat thread baru karena tipe data tidak sesuai",
   ),
 };
 
