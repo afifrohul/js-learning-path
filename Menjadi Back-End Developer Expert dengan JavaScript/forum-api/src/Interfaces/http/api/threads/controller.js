@@ -1,11 +1,15 @@
 import response from "../../../../Commons/utils/response.js";
 import AddThreadUseCase from "../../../../Applications/use_case/threads/AddThreadUseCase.js";
+import GetDetailThreadUseCase from "../../../../Applications/use_case/threads/GetDetailThreadUseCase.js";
+import AddCommentUseCase from "../../../../Applications/use_case/threads/AddCommentUseCase.js";
 
 class ThreadsController {
   constructor(container) {
     this._container = container;
 
     this.postThread = this.postThread.bind(this);
+    this.postComment = this.postComment.bind(this);
+    this.getDetailThread = this.getDetailThread.bind(this);
   }
 
   async postThread(req, res) {
@@ -16,6 +20,43 @@ class ThreadsController {
     const addedThread = await addThreadUseCase.execute(payload);
 
     return response(res, 201, "Thread berhasil dibuat", { addedThread });
+  }
+
+  async getDetailThread(req, res) {
+    const { threadId } = req.params;
+
+    const getDetailThreadUseCase = this._container.getInstance(
+      GetDetailThreadUseCase.name,
+    );
+    const detailThread = await getDetailThreadUseCase.execute(threadId);
+
+    return response(res, 200, "Detail thread berhasil diambil", {
+      thread: detailThread,
+    });
+  }
+
+  async postComment(req, res) {
+    const { threadId } = req.params;
+
+    const getDetailThreadUseCase = this._container.getInstance(
+      GetDetailThreadUseCase.name,
+    );
+    const detailThread = await getDetailThreadUseCase.execute(threadId);
+
+    if (!detailThread) {
+      return response(res, 404, "Thread tidak ditemukan");
+    }
+
+    const { id: user_id } = req.user;
+    const payload = { ...req.body, user_id, thread_id: threadId };
+
+    const addCommentUseCase = this._container.getInstance(
+      AddCommentUseCase.name,
+    );
+
+    const addedComment = await addCommentUseCase.execute(payload);
+
+    return response(res, 201, "Komentar berhasil dibuat", { addedComment });
   }
 }
 

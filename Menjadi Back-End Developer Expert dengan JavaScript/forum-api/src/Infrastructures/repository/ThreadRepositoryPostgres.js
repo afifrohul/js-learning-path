@@ -21,6 +21,59 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     const result = await this._pool.query(query);
     return result.rows[0];
   }
+
+  async detailThread(id) {
+    const query = {
+      text: `
+      SELECT
+      threads.id,
+      threads.title,
+      threads.body,
+      users.username,
+      threads.created_at AS date,
+
+      COALESCE(
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'id', comments.id,
+            'content', comments.content,
+            'username', comment_users.username,
+            'date', comments.created_at
+          )
+        ) FILTER (WHERE comments.id IS NOT NULL),
+        '[]'
+      ) AS comments
+
+    FROM threads
+    JOIN users ON threads.user_id = users.id
+    LEFT JOIN comments ON threads.id = comments.thread_id
+    LEFT JOIN users AS comment_users ON comments.user_id = comment_users.id
+
+    WHERE threads.id = $1
+
+    GROUP BY threads.id, users.username;
+      `,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows[0];
+  }
+
+  async addComment(addComment) {
+    const { content, user_id, thread_id } = addComment;
+    const id = `comment-${this._idGenerator()}`;
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
+
+    const query = {
+      text: "INSERT INTO comments(id, user_id, thread_id, content, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, user_id as owner",
+      values: [id, user_id, thread_id, content, createdAt, updatedAt],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows[0];
+  }
 }
 
 export default ThreadRepositoryPostgres;
