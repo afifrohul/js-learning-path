@@ -1,10 +1,12 @@
 /* istanbul ignore file */
+import { nanoid } from "nanoid";
 import pool from "../src/Infrastructures/database/postgres/pool.js";
 
 const UsersTableTestHelper = {
   async addUser({
-    id = "user-123",
-    username = "dicoding",
+    // id = `user-123`,
+    id = `user-${nanoid(8)}`,
+    username = `user-${nanoid(5)}`,
     password = "secret",
     fullname = "Dicoding Indonesia",
   }) {
@@ -14,6 +16,8 @@ const UsersTableTestHelper = {
     };
 
     await pool.query(query);
+
+    return { id, username };
   },
 
   async findUsersById(id) {

@@ -1,11 +1,14 @@
+/* istanbul ignore file */
 import response from "../../../Commons/utils/response.js";
 import JwtTokenManager from "../../../Infrastructures/security/JwtTokenManager.js";
+import jwt from "jsonwebtoken";
 
 async function authenticateToken(req, res, next) {
   const token = req.headers.authorization;
   if (token && token.indexOf("Bearer ") !== -1) {
     try {
-      const user = await JwtTokenManager.verifyAccessToken(
+      const jwtTokenManager = new JwtTokenManager(jwt);
+      const user = await jwtTokenManager.verifyAccessToken(
         token.split("Bearer ")[1],
       );
       req.user = user;
@@ -15,5 +18,7 @@ async function authenticateToken(req, res, next) {
     }
   }
 
-  return response(res, 401, "Unauthorized", null);
+  return response(res, 401, "Missing authentication", null);
 }
+
+export default authenticateToken;

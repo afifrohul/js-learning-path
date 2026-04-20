@@ -18,7 +18,7 @@ describe("ThreadRepositoryPostgres", () => {
       // Arrange
       await UsersTableTestHelper.addUser({
         id: "user-123",
-        username: "dicoding",
+        username: "dicoding-123",
       });
 
       const addThread = {

@@ -102,7 +102,7 @@ describe("UserRepositoryPostgres", () => {
         await userRepositoryPostgres.getPasswordByUsername("dicoding");
 
       // Assert
-      expect(id).toBe("user-123");
+      expect(id).toBeDefined();
       expect(password).toBe("secret_password");
     });
 

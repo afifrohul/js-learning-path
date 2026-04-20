@@ -1,9 +1,10 @@
 import request from "supertest";
-import pool from "../../../database/postgres/pool.js";
-import UsersTableTestHelper from "../../../../../tests/UsersTableTestHelper.js";
-import AuthenticationsTableTestHelper from "../../../../../tests/AuthenticationsTableTestHelper.js";
-import container from "../../../container.js";
-import createServer from "../../CreateServer.js";
+import pool from "../../database/postgres/pool.js";
+import UsersTableTestHelper from "../../../../tests/UsersTableTestHelper.js";
+import AuthenticationsTableTestHelper from "../../../../tests/AuthenticationsTableTestHelper.js";
+import ThreadsTableTestHelper from "../../../../tests/ThreadsTableTestHelper.js";
+import container from "../../container.js";
+import createServer from "../CreateServer.js";
 
 describe("HTTP server", () => {
   beforeAll(() => {
@@ -18,6 +19,7 @@ describe("HTTP server", () => {
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
     await AuthenticationsTableTestHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
   });
 
   it("should response 404 when request unregistered route", async () => {
@@ -335,6 +337,51 @@ describe("HTTP server", () => {
       expect(response.body.message).toEqual(
         "refresh token tidak ditemukan di database",
       );
+    });
+  });
+
+  describe("when POST /threads", () => {
+    it("should response 201 and persist thread", async () => {
+      // Arrange
+
+      await UsersTableTestHelper.addUser({
+        id: "user-dicoding-thread",
+        username: "dicoding-thread",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const app = await createServer(container);
+
+      const loginResponse = await request(app).post("/authentications").send({
+        username: "dicoding-thread",
+        password: "secret123",
+      });
+
+      const accessToken = loginResponse.body.data.accessToken;
+
+      const requestPayload = {
+        title: "Thread Pertama",
+        body: "Isi thread pertama",
+        user_id: "user-dicoding-thread",
+      };
+
+      // Action
+      const response = await request(app)
+        .post("/threads")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(requestPayload);
+
+      // Assert
+      expect(response.status).toEqual(201);
+      expect(response.body.status).toEqual("success");
+      expect(response.body.data.addedThread).toBeDefined();
+
+      const threads = await ThreadsTableTestHelper.findThreadById(
+        response.body.data.addedThread.id,
+      );
+
+      expect(threads).toHaveLength(1);
     });
   });
 });
