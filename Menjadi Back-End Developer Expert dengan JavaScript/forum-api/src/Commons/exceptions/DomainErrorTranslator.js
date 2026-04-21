@@ -1,4 +1,6 @@
 import InvariantError from "./InvariantError.js";
+import NotFoundError from "./NotFoundError.js";
+import AuthorizationError from "./AuthorizationError.js";
 
 const DomainErrorTranslator = {
   translate(error) {
@@ -36,6 +38,12 @@ DomainErrorTranslator._directories = {
   ),
   "ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
     "tidak dapat membuat komentar baru karena tipe data tidak sesuai",
+  ),
+  "DELETE_COMMENT.DATA_NOT_FOUND": new NotFoundError(
+    "tidak dapat menghapus komentar karena data tidak ditemukan",
+  ),
+  "DELETE_COMMENT.UNAUTHORIZED": new AuthorizationError(
+    "hanya pemilik yang diperbolehkan menghapus komentar",
   ),
 };
 

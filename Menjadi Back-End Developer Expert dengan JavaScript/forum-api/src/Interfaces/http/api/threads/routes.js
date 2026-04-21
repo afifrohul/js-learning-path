@@ -7,6 +7,11 @@ const routes = (controller) => {
   router.post("/", authenticateToken, controller.postThread);
   router.get("/:threadId", controller.getDetailThread);
   router.post("/:threadId/comments", authenticateToken, controller.postComment);
+  router.delete(
+    "/:threadId/comments/:commentId",
+    authenticateToken,
+    controller.deleteComment,
+  );
 
   return router;
 };
