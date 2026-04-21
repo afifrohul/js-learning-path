@@ -38,6 +38,10 @@ export const up = (pgm) => {
       type: "TIMESTAMP",
       notNull: true,
     },
+    deleted_at: {
+      type: "TIMESTAMP",
+      notNull: false,
+    },
   });
 
   pgm.addConstraint(
