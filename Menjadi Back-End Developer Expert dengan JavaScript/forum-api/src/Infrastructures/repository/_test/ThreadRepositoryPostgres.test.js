@@ -117,15 +117,24 @@ describe("ThreadRepositoryPostgres", () => {
       const addedComment =
         await threadRepositoryPostgres.addComment(addComment);
 
+      const addedCommentDb = await threadRepositoryPostgres.getCommentById(
+        addedComment.id,
+      );
+
       // Assert
       expect(addedComment.id).toEqual("comment-123");
       expect(addedComment.content).toEqual("Ini komen");
       expect(addedComment.owner).toEqual("user-123");
+
+      expect(addedCommentDb.id).toEqual("comment-123");
+      expect(addedCommentDb.user_id).toEqual("user-123");
+      expect(addedCommentDb.thread_id).toEqual("thread-123");
+      expect(addedCommentDb.content).toEqual("Ini komen");
     });
   });
 
-  describe("deleteComment function", () => {
-    it("should soft delete comment correctly", async () => {
+  describe("getCommentById function", () => {
+    it("should return comment detail correctly", async () => {
       // Arrange
       await UsersTableTestHelper.addUser({
         id: "user-123",
@@ -133,6 +142,7 @@ describe("ThreadRepositoryPostgres", () => {
       });
 
       const fakeIdGenerator = () => "123";
+
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
         fakeIdGenerator,
@@ -145,92 +155,78 @@ describe("ThreadRepositoryPostgres", () => {
       });
 
       await threadRepositoryPostgres.addComment({
-        content: "Ini komentar",
+        content: "Ini komen",
         user_id: "user-123",
         thread_id: "thread-123",
       });
-
-      const payload = {
-        user_id: "user-123",
-        comment_id: "comment-123",
-      };
 
       // Action
-      const deletedComment =
-        await threadRepositoryPostgres.deleteComment(payload);
+      const comment =
+        await threadRepositoryPostgres.getCommentById("comment-123");
 
-      // Assert return value
-      expect(deletedComment.id).toEqual("comment-123");
-
-      // Assert database
-      const result = await pool.query({
-        text: "SELECT * FROM comments WHERE id = $1",
-        values: ["comment-123"],
+      // Assert
+      expect(comment).toEqual({
+        id: "comment-123",
+        user_id: "user-123",
+        content: "Ini komen",
+        thread_id: "thread-123",
       });
-
-      expect(result.rows).toHaveLength(1);
-      expect(result.rows[0].content).toEqual("**komentar telah dihapus**");
-      expect(result.rows[0].deleted_at).toBeDefined();
     });
 
-    it("should throw error when comment not found", async () => {
-      // Arrange
-      const fakeIdGenerator = () => "123";
+    it("should return null when comment not found", async () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
-        fakeIdGenerator,
+        () => "123",
       );
 
-      const payload = {
-        user_id: "user-123",
-        comment_id: "comment-999",
-      };
+      const comment =
+        await threadRepositoryPostgres.getCommentById("comment-xxx");
 
-      // Action & Assert
-      await expect(
-        threadRepositoryPostgres.deleteComment(payload),
-      ).rejects.toThrowError("DELETE_COMMENT.DATA_NOT_FOUND");
+      expect(comment).toBeNull();
     });
+  });
 
-    it("should throw error when user is not owner of comment", async () => {
-      // Arrange
+  describe("deleteComment function", () => {
+    it("should soft delete comment correctly", async () => {
       await UsersTableTestHelper.addUser({
         id: "user-123",
-        username: "owner-user",
+        username: "dicoding-123",
       });
 
-      await UsersTableTestHelper.addUser({
-        id: "user-456",
-        username: "another-user",
-      });
-
-      const fakeIdGenerator = () => "123";
-      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
-        pool,
-        fakeIdGenerator,
-      );
-
-      await threadRepositoryPostgres.addThread({
+      const addThread = {
         title: "Judul Thread",
         body: "Isi thread",
         user_id: "user-123",
-      });
-
-      await threadRepositoryPostgres.addComment({
-        content: "Komentar milik owner",
-        user_id: "user-123",
-        thread_id: "thread-123",
-      });
-
-      const payload = {
-        user_id: "user-456",
-        comment_id: "comment-123",
       };
 
-      // Action & Assert
-      await expect(
-        threadRepositoryPostgres.deleteComment(payload),
-      ).rejects.toThrowError("DELETE_COMMENT.UNAUTHORIZED");
+      const addComment = {
+        content: "Ini komen",
+        user_id: "user-123",
+        thread_id: "thread-123",
+      };
+
+      const fakeIdGenerator = () => "123";
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator,
+      );
+
+      // Action
+      const addedThread = await threadRepositoryPostgres.addThread(addThread);
+      const addedComment =
+        await threadRepositoryPostgres.addComment(addComment);
+      const deletedComment =
+        await threadRepositoryPostgres.deleteComment("comment-123");
+
+      const deletedCommentDb =
+        await threadRepositoryPostgres.getCommentById("comment-123");
+
+      // Assert
+      expect(deletedComment.id).toEqual("comment-123");
+
+      expect(deletedCommentDb.id).toEqual("comment-123");
+      expect(deletedCommentDb.content).toEqual("**komentar telah dihapus**");
+      expect(deletedCommentDb.deleted_at).not.toBeNull();
     });
   });
 });

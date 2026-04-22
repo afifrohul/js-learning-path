@@ -1,4 +1,3 @@
-import { text } from "express";
 import ThreadRepository from "../../Domains/threads/ThreadRepository.js";
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -58,6 +57,11 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     };
 
     const result = await this._pool.query(query);
+
+    if (result.rows.length === 0) {
+      throw Error("DETAIL_THREAD.DATA_NOT_FOUND");
+    }
+
     return result.rows[0];
   }
 
@@ -76,24 +80,22 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     return result.rows[0];
   }
 
-  async deleteComment(payload) {
-    const { user_id, comment_id } = payload;
-
-    const queryExist = {
-      text: "SELECT id, user_id FROM comments WHERE id = $1",
-      values: [comment_id],
+  async getCommentById(commentId) {
+    const query = {
+      text: `
+      SELECT id, user_id, content, thread_id
+      FROM comments
+      WHERE id = $1
+    `,
+      values: [commentId],
     };
 
-    const isExist = await this._pool.query(queryExist);
+    const result = await this._pool.query(query);
 
-    if (isExist.rows.length === 0) {
-      throw new Error("DELETE_COMMENT.DATA_NOT_FOUND");
-    }
+    return result.rows[0] || null;
+  }
 
-    if (isExist.rows[0].user_id !== user_id) {
-      throw new Error("DELETE_COMMENT.UNAUTHORIZED");
-    }
-
+  async deleteComment(comment_id) {
     const deletedAt = new Date().toISOString();
 
     const query = {

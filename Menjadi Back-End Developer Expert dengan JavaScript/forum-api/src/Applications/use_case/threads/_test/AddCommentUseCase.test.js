@@ -14,20 +14,20 @@ describe("AddCommentUseCase", () => {
 
     const mockAddedComment = {
       id: "comment-123",
-      content: useCasePayload.content,
-      thread_id: useCasePayload.thread_id,
-      user_id: useCasePayload.user_id,
+      content: "Isi comment",
+      owner: "user-123",
     };
 
-    /** creating dependency */
     const mockThreadRepository = new ThreadRepository();
 
-    /** mocking needed function */
+    mockThreadRepository.detailThread = vi
+      .fn()
+      .mockResolvedValue({ id: "thread-123" });
+
     mockThreadRepository.addComment = vi
       .fn()
-      .mockImplementation(() => Promise.resolve(mockAddedComment));
+      .mockResolvedValue(mockAddedComment);
 
-    /** creating use case instance */
     const addCommentUseCase = new AddCommentUseCase({
       threadRepository: mockThreadRepository,
     });
@@ -36,12 +36,10 @@ describe("AddCommentUseCase", () => {
     const addedComment = await addCommentUseCase.execute(useCasePayload);
 
     // Assert
+    expect(mockThreadRepository.detailThread).toBeCalledWith("thread-123");
+
     expect(mockThreadRepository.addComment).toBeCalledWith(
-      new AddComment({
-        content: useCasePayload.content,
-        thread_id: useCasePayload.thread_id,
-        user_id: useCasePayload.user_id,
-      }),
+      new AddComment(useCasePayload),
     );
 
     expect(addedComment).toStrictEqual(mockAddedComment);

@@ -33,6 +33,9 @@ DomainErrorTranslator._directories = {
   "ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
     "tidak dapat membuat thread baru karena tipe data tidak sesuai",
   ),
+  "DETAIL_THREAD.DATA_NOT_FOUND": new NotFoundError(
+    "data thread tidak ditemukan",
+  ),
   "ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
     "tidak dapat membuat komentar baru karena properti yang dibutuhkan tidak ada",
   ),

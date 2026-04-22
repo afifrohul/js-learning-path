@@ -38,16 +38,6 @@ class ThreadsController {
 
   async postComment(req, res) {
     const { threadId } = req.params;
-
-    const getDetailThreadUseCase = this._container.getInstance(
-      GetDetailThreadUseCase.name,
-    );
-    const detailThread = await getDetailThreadUseCase.execute(threadId);
-
-    if (!detailThread) {
-      return response(res, 404, "Thread tidak ditemukan");
-    }
-
     const { id: user_id } = req.user;
     const payload = { ...req.body, user_id, thread_id: threadId };
 
