@@ -3,12 +3,29 @@ import ClientError from "../../Commons/exceptions/ClientError.js";
 import DomainErrorTranslator from "../../Commons/exceptions/DomainErrorTranslator.js";
 import users from "../../Interfaces/http/api/users/index.js";
 import authentications from "../../Interfaces/http/api/authentications/index.js";
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Auth API Documentation",
+      version: "1.0.0",
+      description: "Dokumentasi API pakai Swagger + Express",
+    },
+    servers: [{ url: "http://localhost:3000" }],
+  },
+  apis: ["./src/Interfaces/http/api/authentications/routes.js"],
+};
+const openapiSpecification = swaggerJsDoc(swaggerOptions);
 
 const createServer = async (container) => {
   const app = express();
 
   app.use(express.json());
 
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
   app.use("/users", users(container));
   app.use("/authentications", authentications(container));
 
