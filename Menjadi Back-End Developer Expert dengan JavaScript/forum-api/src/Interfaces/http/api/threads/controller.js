@@ -2,7 +2,9 @@ import response from "../../../../Commons/utils/response.js";
 import AddThreadUseCase from "../../../../Applications/use_case/threads/AddThreadUseCase.js";
 import GetDetailThreadUseCase from "../../../../Applications/use_case/threads/GetDetailThreadUseCase.js";
 import AddCommentUseCase from "../../../../Applications/use_case/threads/AddCommentUseCase.js";
+import AddCommentReplyUseCase from "../../../../Applications/use_case/threads/AddCommentReplyUseCase.js";
 import DeleteCommentUseCase from "../../../../Applications/use_case/threads/DeleteCommentUseCase.js";
+import DeleteCommentReplyUseCase from "../../../../Applications/use_case/threads/DeleteCommentReplyUseCase.js";
 class ThreadsController {
   constructor(container) {
     this._container = container;
@@ -10,7 +12,9 @@ class ThreadsController {
     this.postThread = this.postThread.bind(this);
     this.postComment = this.postComment.bind(this);
     this.getDetailThread = this.getDetailThread.bind(this);
+    this.postCommentReply = this.postCommentReply.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
+    this.deleteCommentReply = this.deleteCommentReply.bind(this);
   }
 
   async postThread(req, res) {
@@ -50,6 +54,25 @@ class ThreadsController {
     return response(res, 201, "Komentar berhasil dibuat", { addedComment });
   }
 
+  async postCommentReply(req, res) {
+    const { threadId, commentId } = req.params;
+    const { id: user_id } = req.user;
+    const payload = {
+      ...req.body,
+      user_id,
+      thread_id: threadId,
+      comment_id: commentId,
+    };
+
+    const addCommentReplyUseCase = this._container.getInstance(
+      AddCommentReplyUseCase.name,
+    );
+
+    const addedReply = await addCommentReplyUseCase.execute(payload);
+
+    return response(res, 201, "Komentar berhasil dibuat", { addedReply });
+  }
+
   async deleteComment(req, res) {
     const { commentId } = req.params;
     const { id: user_id } = req.user;
@@ -60,6 +83,20 @@ class ThreadsController {
     );
 
     const deletedComment = await deleteCommentUseCase.execute(payload);
+
+    return response(res, 200, "Komentar berhasil dihapus", { deletedComment });
+  }
+
+  async deleteCommentReply(req, res) {
+    const { replyId } = req.params;
+    const { id: user_id } = req.user;
+    const payload = { user_id, comment_id: replyId };
+
+    const deleteCommentReplyUseCase = this._container.getInstance(
+      DeleteCommentReplyUseCase.name,
+    );
+
+    const deletedComment = await deleteCommentReplyUseCase.execute(payload);
 
     return response(res, 200, "Komentar berhasil dihapus", { deletedComment });
   }

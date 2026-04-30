@@ -36,6 +36,9 @@ DomainErrorTranslator._directories = {
   "DETAIL_THREAD.DATA_NOT_FOUND": new NotFoundError(
     "data thread tidak ditemukan",
   ),
+  "DETAIL_COMMENT.DATA_NOT_FOUND": new NotFoundError(
+    "data komentar tidak ditemukan",
+  ),
   "ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
     "tidak dapat membuat komentar baru karena properti yang dibutuhkan tidak ada",
   ),

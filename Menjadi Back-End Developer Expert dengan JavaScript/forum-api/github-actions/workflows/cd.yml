@@ -1,0 +1,40 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and deploy app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # Load Linuxbrew / Homebrew path
+            export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+            cd ~/forum-api
+
+            # Update source code
+            git pull origin main
+
+            # Install production dependencies
+            npm ci --omit=dev --no-audit --no-fund
+
+            # Run database migration
+            npm run migrate up
+
+            # Restart application
+            pm2 restart forum-api
+
+            # Save PM2 process list
+            pm2 save

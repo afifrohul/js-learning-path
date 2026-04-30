@@ -49,6 +49,20 @@ describe("HTTP server", () => {
     expect(response.status).toEqual(500);
   });
 
+  describe("when GET /", () => {
+    it("should return 200 and hello world", async () => {
+      // Arrange
+      const app = await createServer({});
+
+      // Action
+      const response = await request(app).get("/");
+
+      // Assert
+      expect(response.status).toEqual(200);
+      expect(response.body.data).toEqual("Hello world!");
+    });
+  });
+
   describe("when POST /users", () => {
     it("should response 201 and persisted user", async () => {
       // Arrange
@@ -481,6 +495,124 @@ describe("HTTP server", () => {
     });
   });
 
+  describe("when POST /threads/:threadId/comments/commentId/replies", () => {
+    it("should response 201 and persist comment reply", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: "user-dicoding-thread",
+        username: "dicoding-thread",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const app = await createServer(container);
+
+      const loginResponse = await request(app).post("/authentications").send({
+        username: "dicoding-thread",
+        password: "secret123",
+      });
+
+      const accessToken = loginResponse.body.data.accessToken;
+
+      const threadPayload = {
+        id: "thread-123",
+        title: "Thread Pertama",
+        body: "Isi thread pertama",
+        user_id: "user-dicoding-thread",
+      };
+
+      const commentPayload = {
+        content: "Thread Pertama",
+      };
+
+      const commentReplyPayload = {
+        content: "Komentar baru",
+      };
+
+      // Action
+      const responseThread = await request(app)
+        .post("/threads")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(threadPayload);
+
+      const responseThreadId = responseThread.body.data.addedThread.id;
+
+      const responseComment = await request(app)
+        .post(`/threads/${responseThreadId}/comments`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentPayload);
+
+      const responseCommentId = responseComment.body.data.addedComment.id;
+
+      const responseCommentReply = await request(app)
+        .post(
+          `/threads/${responseThreadId}/comments/${responseCommentId}/replies`,
+        )
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentReplyPayload);
+
+      // Assert
+      expect(responseCommentReply.status).toEqual(201);
+      expect(responseCommentReply.body.status).toEqual("success");
+      expect(responseCommentReply.body.data.addedReply).toBeDefined();
+    });
+    it("should response 404 if thread or comment not found", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: "user-dicoding-thread",
+        username: "dicoding-thread",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const app = await createServer(container);
+
+      const loginResponse = await request(app).post("/authentications").send({
+        username: "dicoding-thread",
+        password: "secret123",
+      });
+
+      const accessToken = loginResponse.body.data.accessToken;
+
+      const threadPayload = {
+        id: "thread-123",
+        title: "Thread Pertama",
+        body: "Isi thread pertama",
+        user_id: "user-dicoding-thread",
+      };
+
+      const commentPayload = {
+        content: "Thread Pertama",
+      };
+
+      const commentReplyPayload = {
+        content: "Komentar Pertama",
+      };
+
+      // Action
+      const responseThread = await request(app)
+        .post("/threads")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(threadPayload);
+
+      const responseThreadId = responseThread.body.data.addedThread.id;
+
+      const responseComment = await request(app)
+        .post(`/threads/${responseThreadId}}/comments`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentPayload);
+
+      const responseCommentReply = await request(app)
+        .post(`/threads/${responseThreadId}}/comments/xxxx/replies`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentReplyPayload);
+
+      // Assert
+      expect(responseCommentReply.status).toEqual(404);
+      expect(responseCommentReply.body.status).toEqual("fail");
+    });
+  });
+
   describe("when GET /threads/:threadId", () => {
     it("should response 201 and correct detail threads", async () => {
       // Arrange
@@ -636,6 +768,145 @@ describe("HTTP server", () => {
       // Assert
       expect(responseDeleteComment.status).toEqual(404);
       expect(responseDeleteComment.body.status).toEqual("fail");
+    });
+  });
+
+  describe("when DELETE /threads/:threadId/comments/:commentId/replies/replyId", () => {
+    it("should response 200 and soft delete comment reply", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: "user-dicoding-thread",
+        username: "dicoding-thread",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const app = await createServer(container);
+
+      const loginResponse = await request(app).post("/authentications").send({
+        username: "dicoding-thread",
+        password: "secret123",
+      });
+
+      const accessToken = loginResponse.body.data.accessToken;
+
+      const threadPayload = {
+        id: "thread-123",
+        title: "Thread Pertama",
+        body: "Isi thread pertama",
+        user_id: "user-dicoding-thread",
+      };
+
+      const commentPayload = {
+        content: "Thread Pertama",
+      };
+
+      const commentReplyPayload = {
+        content: "Komen Pertama",
+      };
+
+      // Action
+      const responseThread = await request(app)
+        .post("/threads")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(threadPayload);
+
+      const responseThreadId = responseThread.body.data.addedThread.id;
+
+      const responseComment = await request(app)
+        .post(`/threads/${responseThreadId}/comments`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentPayload);
+
+      const responseCommentId = responseComment.body.data.addedComment.id;
+
+      const responseCommentReply = await request(app)
+        .post(
+          `/threads/${responseThreadId}/comments/${responseCommentId}/replies`,
+        )
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentReplyPayload);
+
+      const responseCommentReplyId =
+        responseCommentReply.body.data.addedReply.id;
+
+      const responseDeleteReplyComment = await request(app)
+        .delete(
+          `/threads/${responseThreadId}/comments/${responseCommentId}/replies/${responseCommentReplyId}`,
+        )
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      // Assert
+      expect(responseDeleteReplyComment.status).toEqual(200);
+      expect(responseDeleteReplyComment.body.status).toEqual("success");
+    });
+    it("should response 404 if thread not found", async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: "user-dicoding-thread",
+        username: "dicoding-thread",
+        password: await require("bcrypt").hash("secret123", 10),
+        fullname: "Dicoding Indonesia",
+      });
+
+      const app = await createServer(container);
+
+      const loginResponse = await request(app).post("/authentications").send({
+        username: "dicoding-thread",
+        password: "secret123",
+      });
+
+      const accessToken = loginResponse.body.data.accessToken;
+
+      const threadPayload = {
+        id: "thread-123",
+        title: "Thread Pertama",
+        body: "Isi thread pertama",
+        user_id: "user-dicoding-thread",
+      };
+
+      const commentPayload = {
+        content: "Thread Pertama",
+      };
+
+      const commentReplyPayload = {
+        content: "Komen Pertama",
+      };
+
+      // Action
+      const responseThread = await request(app)
+        .post("/threads")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(threadPayload);
+
+      const responseThreadId = responseThread.body.data.addedThread.id;
+
+      const responseComment = await request(app)
+        .post(`/threads/${responseThreadId}/comments`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentPayload);
+
+      const responseCommentId = responseComment.body.data.addedComment.id;
+
+      const responseCommentReply = await request(app)
+        .post(
+          `/threads/${responseThreadId}/comments/${responseCommentId}/replies`,
+        )
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(commentReplyPayload);
+
+      const responseCommentReplyId =
+        responseCommentReply.body.data.addedReply.id;
+
+      const responseDeleteReplyComment = await request(app)
+        .delete(
+          `/threads/${responseThreadId}/comments/${responseCommentId}/replies/xxx`,
+        )
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      // Assert
+      expect(responseDeleteReplyComment.status).toEqual(404);
+      expect(responseDeleteReplyComment.body.status).toEqual("fail");
     });
   });
 });

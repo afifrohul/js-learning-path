@@ -14,6 +14,10 @@ export const up = (pgm) => {
       type: "VARCHAR(50)",
       primaryKey: true,
     },
+    comment_id: {
+      type: "VARCHAR(50)",
+      notNull: false,
+    },
     user_id: {
       type: "VARCHAR(50)",
       notNull: true,
@@ -39,6 +43,12 @@ export const up = (pgm) => {
       notNull: false,
     },
   });
+
+  pgm.addConstraint(
+    "comments",
+    "fk_comments.parent_comments.id",
+    "FOREIGN KEY(comment_id) REFERENCES comments(id) ON DELETE CASCADE",
+  );
 
   pgm.addConstraint(
     "comments",

@@ -18,7 +18,13 @@ describe("ThreadRepository interace", () => {
     await expect(threadRepository.getCommentById("")).rejects.toThrowError(
       "THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED",
     );
+    await expect(threadRepository.addCommentReply({})).rejects.toThrowError(
+      "THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED",
+    );
     await expect(threadRepository.deleteComment("")).rejects.toThrowError(
+      "THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED",
+    );
+    await expect(threadRepository.deleteCommentReply("")).rejects.toThrowError(
       "THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED",
     );
   });
