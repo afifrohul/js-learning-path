@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiHome, FiPlusCircle } from "react-icons/fi";
+import { FiHome, FiLogOut, FiPlusCircle } from "react-icons/fi";
 
-function Navigation() {
+function Navigation({ logout, name }) {
   return (
     <nav className="navigation">
       <ul>
@@ -15,6 +15,11 @@ function Navigation() {
           <Link to="/add">
             <FiPlusCircle />
           </Link>
+        </li>
+        <li>
+          <button onClick={logout}>
+            {name} <FiLogOut />
+          </button>
         </li>
       </ul>
     </nav>
