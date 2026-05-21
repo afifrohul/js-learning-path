@@ -1,10 +1,16 @@
+import React from "react";
 import { useParams } from "react-router-dom";
-import { getNote } from "../utils/local-data";
+import { getNote } from "../utils/network-data";
 import { showFormattedDate } from "../utils";
 
 function DetailPage() {
   const { id } = useParams();
-  const note = getNote(id);
+  const [note, setNote] = React.useState({});
+  React.useEffect(() => {
+    getNote(id).then(({ data }) => {
+      setNote(data);
+    });
+  }, []);
 
   return (
     <section>

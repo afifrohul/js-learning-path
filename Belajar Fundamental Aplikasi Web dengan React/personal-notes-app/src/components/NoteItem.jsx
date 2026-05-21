@@ -2,7 +2,7 @@ import React from "react";
 import { showFormattedDate } from "../utils";
 import { Link } from "react-router-dom";
 
-function NoteItem({ note, onDelete, onArchive }) {
+function NoteItem({ note, onDelete, onArchive, onUnarchive }) {
   return (
     <div className="note-item" data-testid="note-item" data-note-id={note?.id}>
       <div className="note-item__content" data-testid="note-item-content">
@@ -27,14 +27,25 @@ function NoteItem({ note, onDelete, onArchive }) {
         >
           Delete
         </button>
-        <button
-          className="note-item__archive-button"
-          type="button"
-          onClick={() => onArchive(note.id)}
-          data-testid="note-item-archive-button"
-        >
-          {note.archived == false ? "Archive" : "Unarchive"}
-        </button>
+        {note.archived == false ? (
+          <button
+            className="note-item__archive-button"
+            type="button"
+            onClick={() => onArchive(note.id)}
+            data-testid="note-item-archive-button"
+          >
+            Archive
+          </button>
+        ) : (
+          <button
+            className="note-item__archive-button"
+            type="button"
+            onClick={() => onUnarchive(note.id)}
+            data-testid="note-item-archive-button"
+          >
+            Unarchive
+          </button>
+        )}
       </div>
     </div>
   );

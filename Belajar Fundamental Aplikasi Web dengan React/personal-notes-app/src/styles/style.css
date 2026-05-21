@@ -1,3 +1,60 @@
+/* =========================
+   THEME VARIABLES
+========================= */
+
+:root {
+  /* Light Theme */
+  --bg-color: #ffffff;
+  --text-color: #202124;
+
+  --surface-color: #f5f5f5;
+  --border-color: #d0d0d0;
+
+  --input-bg: #ffffff;
+  --input-text: #202124;
+  --placeholder-color: #888;
+
+  --muted-text: #666;
+
+  --delete-color: #d93025;
+  --delete-hover: #b00020;
+
+  --archive-color: #c49000;
+  --archive-hover: #8a6500;
+
+  --mark-bg: rgba(255, 241, 118, 0.6);
+}
+
+/* =========================
+   DARK THEME
+========================= */
+
+[data-theme='dark'] {
+  --bg-color: #202124;
+  --text-color: #ffffff;
+
+  --surface-color: #2d2e31;
+  --border-color: #aaa;
+
+  --input-bg: transparent;
+  --input-text: #ffffff;
+  --placeholder-color: #aaa;
+
+  --muted-text: #aaa;
+
+  --delete-color: #ff5f52;
+  --delete-hover: #ff2d20;
+
+  --archive-color: #fff263;
+  --archive-hover: #c49000;
+
+  --mark-bg: rgba(255, 241, 118, 0.3);
+}
+
+/* =========================
+   GLOBAL
+========================= */
+
 * {
   padding: 0;
   margin: 0;
@@ -6,39 +63,58 @@
 
 body {
   font-family: "Inter", sans-serif;
-  background-color: #202124;
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
+
+/* =========================
+   INPUT
+========================= */
 
 input,
 textarea {
   padding: 12px;
   margin: 12px 0;
   font-family: "Inter", sans-serif;
-  background-color: transparent;
-  color: white;
-  border: 1px solid #aaa;
+
+  background-color: var(--input-bg);
+  color: var(--input-text);
+
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #aaa;
+  color: var(--placeholder-color);
   font-weight: bold;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 .note-app__header {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px 16px;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .note-app__header h1 {
   margin: 8px 0;
   flex: 1;
-  color: white;
+  color: var(--text-color);
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navigation ul {
+  display: flex;
+  align-items: center;
 }
 
 .navigation ul li {
@@ -46,10 +122,25 @@ textarea::placeholder {
   padding: 16px;
 }
 
-.navigation ul li a {
+.navigation ul li a,
+.navigation ul li button {
   font-size: 28px;
-  color: white;
+  color: var(--text-color);
 }
+
+.navigation ul li button {
+  background-color: transparent;
+  font-family: "Inter", sans-serif;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* =========================
+   BODY
+========================= */
 
 .note-app__body {
   max-width: 1000px;
@@ -62,68 +153,61 @@ textarea::placeholder {
   margin: 16px 0;
 }
 
-.note-input {
-  margin: 0 auto;
-  max-width: 500px;
-  margin-bottom: 48px;
+/* =========================
+   FORMS
+========================= */
+
+.login-page,
+.register-page {
+  text-align: center;
 }
 
+.login-input,
+.register-input,
+.note-input {
+  margin: 0 auto 48px;
+  max-width: 500px;
+}
+
+.login-input input,
+.register-input input,
 .note-input input,
 .note-input textarea {
   display: block;
   width: 100%;
 }
 
+.login-input__title,
+.register-input__title,
 .note-input__title {
   font-weight: bold;
-}
-
-.note-input__title__char-limit {
-  font-size: 14px;
-  text-align: right;
-  color: #aaa;
-}
-
-.note-input__title__char-limit--warn {
-  color: #ffb74d;
-}
-
-.note-input__feedback {
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.note-input__feedback--error {
-  color: #ff8a80;
-}
-
-.note-input__feedback--success {
-  color: #b9f6ca;
-}
-
-.note-input__autosave-hint {
-  font-size: 12px;
-  text-align: right;
-  color: #81c784;
-  margin-top: 8px;
 }
 
 .note-input__body {
   min-height: 175px;
 }
 
+.login-input button,
+.register-input button,
 .note-input button {
   display: block;
   width: 100%;
   padding: 8px;
+
   background-color: transparent;
-  font-family: "Inter", sans-serif;
-  color: white;
-  border: 1px solid #aaa;
+  color: var(--text-color);
+
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+
+  font-family: "Inter", sans-serif;
   font-weight: bold;
   cursor: pointer;
 }
+
+/* =========================
+   NOTES
+========================= */
 
 .notes-list {
   display: grid;
@@ -156,9 +240,14 @@ textarea::placeholder {
   text-transform: capitalize;
 }
 
+.notes-group__count,
+.notes-list__empty-message,
+.note-item__date {
+  color: var(--muted-text);
+}
+
 .notes-group__count {
   font-size: 12px;
-  color: #aaa;
 }
 
 .notes-group__items {
@@ -169,15 +258,21 @@ textarea::placeholder {
 
 .notes-list__empty-message {
   text-align: center;
-  color: #aaa;
 }
 
+/* =========================
+   NOTE ITEM
+========================= */
+
 .note-item {
-  border: 1px solid #aaa;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
+
   display: flex;
   flex-direction: column;
+
+  background-color: var(--surface-color);
 }
 
 .note-item__content {
@@ -195,7 +290,6 @@ textarea::placeholder {
 .note-item__date {
   font-size: 12px;
   margin-bottom: 8px;
-  color: #aaa;
 }
 
 .note-item__body {
@@ -210,38 +304,50 @@ textarea::placeholder {
 .note-item__archive-button {
   display: block;
   width: 100%;
-  background-color: transparent;
-  border: 0;
-  border-top: 1px solid #aaa;
   padding: 8px 0;
+
+  background-color: transparent;
+
+  border: 0;
+  border-top: 1px solid var(--border-color);
+
   font-family: "Inter", sans-serif;
   font-weight: 500;
+
   cursor: pointer;
 }
 
 .note-item__delete-button {
-  border-right: 1px solid #aaa;
-  color: #ff5f52;
+  border-right: 1px solid var(--border-color);
+  color: var(--delete-color);
 }
 
 .note-item__archive-button {
-  color: #fff263;
+  color: var(--archive-color);
 }
 
 .note-item__archive-button:hover {
-  color: #c49000;
+  color: var(--archive-hover);
 }
 
 .note-item__delete-button:hover {
-  color: #b00020;
+  color: var(--delete-hover);
 }
 
+/* =========================
+   MARK
+========================= */
+
 .note-item mark {
-  background-color: rgba(255, 241, 118, 0.3);
+  background-color: var(--mark-bg);
   color: inherit;
   padding: 0 2px;
   border-radius: 2px;
 }
+
+/* =========================
+   SEARCH
+========================= */
 
 .note-search {
   position: relative;
@@ -256,48 +362,40 @@ textarea::placeholder {
 .note-search__clear {
   position: absolute;
   right: 12px;
+
   background: transparent;
   border: 0;
-  color: #aaa;
+
+  color: var(--muted-text);
+
   font-size: 20px;
-  cursor: pointer;
   line-height: 1;
+
+  cursor: pointer;
 }
 
 .note-search__clear:hover {
-  color: #fff;
+  color: var(--text-color);
 }
 
-@media only screen and (min-width: 500px) {
-  .notes-list {
-    grid-template-columns: 1fr 1fr;
-  }
+/* =========================
+   RESPONSIVE
+========================= */
 
+@media only screen and (min-width: 500px) {
+  .notes-list,
   .notes-group__items {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media only screen and (min-width: 800px) {
-  .notes-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
+  .notes-list,
   .notes-group__items {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .note-search input {
     min-width: 400px;
-  }
-}
-
-@media only screen and (min-width: 800px) {
-  .notes-list {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .notes-group__items {
-    grid-template-columns: repeat(4, 1fr);
   }
 }

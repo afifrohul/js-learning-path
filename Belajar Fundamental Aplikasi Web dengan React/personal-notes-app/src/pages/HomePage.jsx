@@ -4,64 +4,74 @@ import {
   deleteNote,
   archiveNote,
   getArchivedNotes,
-} from "../utils/local-data";
+  unarchiveNote,
+} from "../utils/network-data";
 import NotesList from "../components/NotesList";
 
-class HomePage extends React.Component {
-  constructor(props) {
-    super(props);
+function HomePage() {
+  const [notes, setNotes] = React.useState([]);
+  const [archivedNotes, setArchivedNotes] = React.useState([]);
 
-    this.state = {
-      notes: getActiveNotes(),
-      archiveNote: getArchivedNotes(),
-    };
+  const onDeleteHandler = async (id) => {
+    await deleteNote(id);
 
-    this.onDeleteHandler = this.onDeleteHandler.bind(this);
-    this.onArchiveHandler = this.onArchiveHandler.bind(this);
-  }
+    const { data: active } = await getActiveNotes();
+    setNotes(active);
 
-  onDeleteHandler(id) {
-    deleteNote(id);
-    this.setState(() => {
-      return {
-        notes: getActiveNotes(),
-        archiveNote: getArchivedNotes(),
-      };
+    const { data: archived } = await getArchivedNotes();
+    setArchivedNotes(archived);
+  };
+
+  const onArchiveHandler = async (id) => {
+    await archiveNote(id);
+
+    const { data: active } = await getActiveNotes();
+    setNotes(active);
+
+    const { data: archived } = await getArchivedNotes();
+    setArchivedNotes(archived);
+  };
+
+  const onUnarchiveHandler = async (id) => {
+    await unarchiveNote(id);
+
+    const { data: active } = await getActiveNotes();
+    setNotes(active);
+
+    const { data: archived } = await getArchivedNotes();
+    setArchivedNotes(archived);
+  };
+
+  React.useEffect(() => {
+    getActiveNotes().then(({ data }) => {
+      setNotes(data);
     });
-  }
 
-  onArchiveHandler(id) {
-    archiveNote(id);
-    this.setState(() => {
-      return {
-        notes: getActiveNotes(),
-        archiveNote: getArchivedNotes(),
-      };
+    getArchivedNotes().then(({ data }) => {
+      setArchivedNotes(data);
     });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div>
-        <section>
-          <h2>Catatan Aktif</h2>
-          <NotesList
-            notes={this.state.notes}
-            onDelete={this.onDeleteHandler}
-            onArchive={this.onArchiveHandler}
-          />
-        </section>
-        <section>
-          <h2>Arsip</h2>
-          <NotesList
-            notes={this.state.archiveNote}
-            onDelete={this.onDeleteHandler}
-            onArchive={this.onArchiveHandler}
-          />
-        </section>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <section>
+        <h2>Catatan Aktif</h2>
+        <NotesList
+          notes={notes}
+          onDelete={onDeleteHandler}
+          onArchive={onArchiveHandler}
+        />
+      </section>
+      <section>
+        <h2>Arsip</h2>
+        <NotesList
+          notes={archivedNotes}
+          onDelete={onDeleteHandler}
+          onUnarchive={onUnarchiveHandler}
+        />
+      </section>
+    </div>
+  );
 }
 
 export default HomePage;

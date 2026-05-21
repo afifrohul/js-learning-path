@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { addNote } from "../utils/local-data";
+import { addNote } from "../utils/network-data";
 import NoteInput from "../components/NoteInput";
 import React from "react";
 
@@ -17,8 +17,8 @@ class AddPage extends React.Component {
     this.onAddNoteHandler = this.onAddNoteHandler.bind(this);
   }
 
-  onAddNoteHandler(note) {
-    addNote(note);
+  async onAddNoteHandler(note) {
+    await addNote(note);
     this.props.navigate("/");
   }
 

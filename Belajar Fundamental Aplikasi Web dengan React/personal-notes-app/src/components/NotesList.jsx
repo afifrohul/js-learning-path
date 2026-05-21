@@ -1,7 +1,7 @@
 import NoteItem from "./NoteItem";
 
 function NotesList(props) {
-  const { notes, onDelete, onArchive } = props;
+  const { notes, onDelete, onArchive, onUnarchive } = props;
 
   const hasNotes = notes.length > 0;
 
@@ -15,10 +15,11 @@ function NotesList(props) {
 
   return (
     <div className="notes-list">
-      {notes.map((note, index) => (
+      {notes?.map((note, index) => (
         <NoteItem
           onDelete={onDelete}
           onArchive={onArchive}
+          onUnarchive={onUnarchive}
           key={index}
           note={note}
         />
