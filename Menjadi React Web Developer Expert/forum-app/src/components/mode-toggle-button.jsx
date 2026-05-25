@@ -9,7 +9,7 @@ import {
 import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
 
-export function ModeToggle() {
+export function ModeToggleButton() {
   const { setTheme } = useTheme();
 
   return (

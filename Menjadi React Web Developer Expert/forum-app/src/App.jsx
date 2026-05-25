@@ -9,6 +9,7 @@ import { SignupPage } from '@/pages/SignupPage';
 import { Navigation } from '@/components/navigation';
 import { asyncUnsetAuthUser } from '@/states/authUser/action';
 import Loading from '@/components/loading';
+import { ModeToggleKey } from '@/components/mode-toggle-key';
 
 function App() {
   const { authUser = null, isPreload = false } = useSelector(
@@ -46,6 +47,7 @@ function App() {
   return (
     <>
       <Loading />
+      <ModeToggleKey />
       <section className="flex justify-center">
         <div className="flex flex-col gap-2 min-w-4xl min-h-screen border-x p-4">
           <header>
