@@ -2,6 +2,7 @@ import { hideLoading, showLoading } from '@/states/loading/action';
 import api from '../../utils/api';
 import { receiveThreadsActionCreator } from '../threads/action';
 import { receiveUsersActionCreator } from '../users/action';
+import { receiveLeaderboardsActionCreator } from '@/states/leaderboards/action';
 
 function asyncPopulateUsersAndThreads() {
   return async (dispatch) => {
@@ -19,4 +20,18 @@ function asyncPopulateUsersAndThreads() {
   };
 }
 
-export { asyncPopulateUsersAndThreads };
+function asyncPopulateLeaderboards() {
+  return async (dispatch) => {
+    dispatch(showLoading());
+    try {
+      const leaderboards = await api.getLeaderboards();
+
+      dispatch(receiveLeaderboardsActionCreator(leaderboards));
+    } catch (error) {
+      alert(error.message);
+    }
+    dispatch(hideLoading());
+  };
+}
+
+export { asyncPopulateUsersAndThreads, asyncPopulateLeaderboards };
