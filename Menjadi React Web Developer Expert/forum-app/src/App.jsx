@@ -29,7 +29,7 @@ function App() {
   };
 
   if (isPreload) {
-    return null;
+    return <Loading />;
   }
 
   return (
@@ -40,15 +40,11 @@ function App() {
       <Routes>
         <Route
           path="/sign-in"
-          element={
-            authUser ? <Navigate to="/" replace /> : <SigninPage />
-          }
+          element={authUser ? <Navigate to="/" replace /> : <SigninPage />}
         />
         <Route
           path="/sign-up"
-          element={
-            authUser ? <Navigate to="/" replace /> : <SignupPage />
-          }
+          element={authUser ? <Navigate to="/" replace /> : <SignupPage />}
         />
 
         <Route element={<MainLayout authUser={authUser} signOut={onSignOut} />}>
