@@ -1,4 +1,5 @@
 import SubtleBadge from '@/components/subtle-badge';
+import { postedAt } from '@/utils';
 import { Hash, MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 export default function ThreadItem({ thread }) {
@@ -9,6 +10,20 @@ export default function ThreadItem({ thread }) {
         icon={<Hash className="w-2.5 h-2.5" />}
         label={thread.category}
       />
+      <div className="flex items-center gap-3">
+        <img
+          src={thread.user.avatar}
+          alt={thread.user.id}
+          title={thread.user.name}
+          className="rounded-full h-6 w-6"
+        />
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold">{thread.user.name}</p>
+          <p className="text-xs text-muted-foreground">
+            @{thread.user.id} · {postedAt(thread.createdAt)}
+          </p>
+        </div>
+      </div>
       <div className="space-y-0.5">
         <p className="text-sm font-medium">{thread.title}</p>
         <div
