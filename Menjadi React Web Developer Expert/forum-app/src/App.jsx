@@ -13,6 +13,7 @@ import { MainLayout } from '@/components/main-layout';
 import ThreadPage from '@/pages/ThreadPage';
 import LeadeboardPage from '@/pages/LeaderboardPage';
 import CreateThreadPage from '@/pages/CreateThreadPage';
+import DetailThreadPage from '@/pages/DetailThreadPage';
 
 function App() {
   const { authUser = null, isPreload = false } = useSelector(
@@ -52,6 +53,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/threads" element={<ThreadPage />} />
           <Route path="/threads/add" element={<CreateThreadPage />} />
+          <Route path="/threads/:id" element={<DetailThreadPage />} />
           <Route path="/leaderboards" element={<LeadeboardPage />} />
         </Route>
       </Routes>

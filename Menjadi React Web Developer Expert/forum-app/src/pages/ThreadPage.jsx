@@ -71,15 +71,17 @@ function ThreadPage() {
               </SelectContent>
             </Select>
           </div>
-          <Link
-            to="/threads/add"
-            className="border hover:bg-accent py-0.5 px-1 rounded duration-200 transition-all"
-          >
-            <div className="flex gap-1 items-center py-0.5">
-              <Plus className="w-3.5 h-3.5" />
-              <p className="text-xs font-semibold">Create New Thread</p>
-            </div>
-          </Link>
+          {authUser && (
+            <Link
+              to="/threads/add"
+              className="border hover:bg-accent py-0.5 px-1 rounded duration-200 transition-all"
+            >
+              <div className="flex gap-1 items-center py-0.5">
+                <Plus className="w-3.5 h-3.5" />
+                <p className="text-xs font-semibold">Create New Thread</p>
+              </div>
+            </Link>
+          )}
         </div>
       </div>
 
