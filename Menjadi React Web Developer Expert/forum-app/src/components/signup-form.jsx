@@ -19,8 +19,6 @@ export function SignupForm({ className, ...props }) {
     dispatch(asyncRegisterUser({ name, email, password }));
 
     navigate('/');
-
-    console.log({ name: name, email: email, password: password });
   };
 
   return (

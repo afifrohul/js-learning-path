@@ -64,7 +64,7 @@ export default function SignupInput({ signup }) {
             Create Account
           </Button>
           <FieldDescription className="text-center">
-            Already have an account? <Link to="/login">Sign in</Link>
+            Already have an account? <Link to="/sign-in">Sign in</Link>
           </FieldDescription>
         </Field>
       </FieldGroup>

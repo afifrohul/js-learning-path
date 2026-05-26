@@ -1,15 +1,17 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import HomePage from '@/pages/HomePage';
+import { SigninPage } from '@/pages/SigninPage';
+import { SignupPage } from '@/pages/SignupPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { asyncPreloadProcess } from '@/states/isPreload/action';
-import { SigninPage } from '@/pages/SigninPage';
-import { SignupPage } from '@/pages/SignupPage';
-import { Navigation } from '@/components/navigation';
 import { asyncUnsetAuthUser } from '@/states/authUser/action';
 import Loading from '@/components/loading';
 import { ModeToggleKey } from '@/components/mode-toggle-key';
+import { MainLayout } from '@/components/main-layout';
+import ThreadPage from '@/pages/ThreadPage';
+import LeadeboardPage from '@/pages/LeaderboardPage';
 
 function App() {
   const { authUser = null, isPreload = false } = useSelector(
@@ -30,36 +32,31 @@ function App() {
     return null;
   }
 
-  if (authUser === null) {
-    return (
-      <>
-        <Loading />
-        <main>
-          <Routes>
-            <Route path="/*" element={<SigninPage />} />
-            <Route path="/sign-up" element={<SignupPage />} />
-          </Routes>
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
       <Loading />
       <ModeToggleKey />
-      <section className="flex justify-center">
-        <div className="flex flex-col gap-2 min-w-4xl min-h-screen border-x p-4">
-          <header>
-            <Navigation authUser={authUser} signOut={onSignOut} />
-          </header>
-          <main>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-            </Routes>
-          </main>
-        </div>
-      </section>
+
+      <Routes>
+        <Route
+          path="/sign-in"
+          element={
+            authUser ? <Navigate to="/" replace /> : <SigninPage />
+          }
+        />
+        <Route
+          path="/sign-up"
+          element={
+            authUser ? <Navigate to="/" replace /> : <SignupPage />
+          }
+        />
+
+        <Route element={<MainLayout authUser={authUser} signOut={onSignOut} />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/threads" element={<ThreadPage />} />
+          <Route path="/leaderboards" element={<LeadeboardPage />} />
+        </Route>
+      </Routes>
     </>
   );
 }
