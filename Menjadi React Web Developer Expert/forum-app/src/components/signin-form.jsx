@@ -9,12 +9,16 @@ import {
 import SigninInput from '@/components/signin-input';
 import { useDispatch } from 'react-redux';
 import { asyncSetAuthUser } from '@/states/authUser/action';
+import { useNavigate } from 'react-router-dom';
 
 export function SigninForm({ className, ...props }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const onSignin = ({ email, password }) => {
     dispatch(asyncSetAuthUser({ email, password }));
+
+    navigate('/threads')
   };
 
   return (

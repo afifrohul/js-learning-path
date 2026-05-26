@@ -18,7 +18,7 @@ export function SignupForm({ className, ...props }) {
   const onSignup = ({ name, email, password }) => {
     dispatch(asyncRegisterUser({ name, email, password }));
 
-    navigate('/');
+    navigate('/sign-in');
   };
 
   return (

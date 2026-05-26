@@ -21,7 +21,7 @@ export default function SigninInput({ signin }) {
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
-            id="username"
+            id="email"
             type="email"
             placeholder="m@example.com"
             required
