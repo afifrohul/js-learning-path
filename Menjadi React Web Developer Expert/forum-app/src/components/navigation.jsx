@@ -13,14 +13,6 @@ export function Navigation({ authUser, signOut }) {
       </Link>
       <div className="flex gap-4 items-center text-xs">
         <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-accent font-semibold' : ''} hover:bg-accent py-0.5 px-1 rounded duration-200 transition-all`
-          }
-        >
-          Home
-        </NavLink>
-        <NavLink
           to="/threads"
           className={({ isActive }) =>
             `${isActive ? 'bg-accent font-semibold' : ''} hover:bg-accent py-0.5 px-1 rounded duration-200 transition-all`
@@ -46,7 +38,7 @@ export function Navigation({ authUser, signOut }) {
               title={name}
               className="rounded-full h-6 w-6"
             />
-            <p className="text-xs">{name},</p>
+            <p className="hidden lg:block text-xs">{name},</p>
             <Button type="button" size="sm" variant="ghost" onClick={signOut}>
               Sign Out
             </Button>

@@ -15,7 +15,7 @@ export default function Loading() {
 
   return (
     <div className="fixed top-8 right-8 z-50">
-      <Button variant="outline" className="shadow-md pointer-events-none">
+      <Button variant="outline" className="shadow-md pointer-events-none bg-accent">
         <Loader className="mr-2 h-4 w-4 animate-spin" />
         Loading...
       </Button>

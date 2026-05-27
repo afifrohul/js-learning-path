@@ -53,7 +53,7 @@ function ThreadPage() {
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-fit">
                 <SelectValue placeholder="Filter thread" />
               </SelectTrigger>
 
@@ -78,7 +78,7 @@ function ThreadPage() {
             >
               <div className="flex gap-1 items-center py-0.5">
                 <Plus className="w-3.5 h-3.5" />
-                <p className="text-xs font-semibold">Create New Thread</p>
+                <p className="text-xs font-semibold">New</p>
               </div>
             </Link>
           )}
