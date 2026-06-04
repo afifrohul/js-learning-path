@@ -4,7 +4,7 @@ import { ThumbsDown, ThumbsUp } from 'lucide-react';
 export default function CommentItem({ comment }) {
   return (
     <div className="">
-      <div className="space-y-2">
+      <div className="space-y-4">
         <div className="flex items-center gap-3">
           <img
             src={comment.owner.avatar}
@@ -27,11 +27,11 @@ export default function CommentItem({ comment }) {
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
           <div className="flex gap-1 items-center">
-            <ThumbsUp className="w-3 h-3" />
+            <ThumbsUp className="w-4 h-4" />
             <p className="text-xs">{comment.upVotesBy.length}</p>
           </div>
           <div className="flex gap-1 items-center">
-            <ThumbsDown className="w-3 h-3" />
+            <ThumbsDown className="w-4 h-4" />
             <p className="text-xs">{comment.downVotesBy.length}</p>
           </div>
         </div>

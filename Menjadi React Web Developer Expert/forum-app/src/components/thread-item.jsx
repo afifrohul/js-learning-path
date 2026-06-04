@@ -7,7 +7,7 @@ export default function ThreadItem({ thread }) {
   return (
     <div className="border p-3 rounded-md">
       <Link to={`/threads/${thread.id}`}>
-        <div className="space-y-2">
+        <div className="space-y-4">
           <SubtleBadge
             color="teal"
             icon={<Hash className="w-2.5 h-2.5" />}
@@ -36,15 +36,15 @@ export default function ThreadItem({ thread }) {
           </div>
           <div className="flex gap-3 items-center text-muted-foreground">
             <div className="flex gap-1 items-center">
-              <ThumbsUp className="w-3 h-3" />
+              <ThumbsUp className="w-4 h-4" />
               <p className="text-xs">{thread.upVotesBy.length}</p>
             </div>
             <div className="flex gap-1 items-center">
-              <ThumbsDown className="w-3 h-3" />
+              <ThumbsDown className="w-4 h-4" />
               <p className="text-xs">{thread.downVotesBy.length}</p>
             </div>
             <div className="flex gap-1 items-center">
-              <MessageCircle className="w-3 h-3" />
+              <MessageCircle className="w-4 h-4" />
               <p className="text-xs">{thread.totalComments}</p>
             </div>
           </div>
