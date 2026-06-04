@@ -13,6 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  asyncDownVoteThread,
+  asyncNeutralVoteThread,
+  asyncUpVoteThread,
+} from '@/states/threads/action';
 
 function ThreadPage() {
   const {
@@ -41,6 +46,18 @@ function ThreadPage() {
     selectedCategory === 'all'
       ? threadList
       : threadList.filter((thread) => thread.category === selectedCategory);
+
+  const onUpVote = (threadId) => {
+    dispatch(asyncUpVoteThread(threadId));
+  };
+
+  const onDownVote = (threadId) => {
+    dispatch(asyncDownVoteThread(threadId));
+  };
+
+  const onNeutralVote = (threadId) => {
+    dispatch(asyncNeutralVoteThread(threadId));
+  };
 
   return (
     <div className="mt-2">
@@ -85,7 +102,12 @@ function ThreadPage() {
         </div>
       </div>
 
-      <ThreadList threads={filteredThreadList} />
+      <ThreadList
+        threads={filteredThreadList}
+        upVote={onUpVote}
+        downVote={onDownVote}
+        neutralVote={onNeutralVote}
+      />
     </div>
   );
 }
