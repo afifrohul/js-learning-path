@@ -1,21 +1,18 @@
+import CommentButton from '@/components/comment-button';
 import CommentInput from '@/components/comment-input';
 import CommentItem from '@/components/comment-item';
+import DownVoteButton from '@/components/down-vote-button';
 import Loading from '@/components/loading';
 import SubtleBadge from '@/components/subtle-badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import UpVoteButton from '@/components/up-vote-button';
 import {
   asyncAddComment,
   asyncReceiveThreadDetail,
 } from '@/states/threadDetail/action';
 import { postedAt } from '@/utils';
-import {
-  ChevronLeft,
-  Hash,
-  MessageCircle,
-  ThumbsDown,
-  ThumbsUp,
-} from 'lucide-react';
+import { ChevronLeft, Hash } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
@@ -76,18 +73,9 @@ export default function DetailThreadPage() {
           />
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
-          <div className="flex gap-1 items-center">
-            <ThumbsUp className="w-4 h-4" />
-            <p className="text-xs">{threadDetail.upVotesBy.length}</p>
-          </div>
-          <div className="flex gap-1 items-center">
-            <ThumbsDown className="w-4 h-4" />
-            <p className="text-xs">{threadDetail.downVotesBy.length}</p>
-          </div>
-          <div className="flex gap-1 items-center">
-            <MessageCircle className="w-4 h-4" />
-            <p className="text-xs">{threadDetail.comments.length}</p>
-          </div>
+          <UpVoteButton label={threadDetail.upVotesBy.length} />
+          <DownVoteButton label={threadDetail.downVotesBy.length} />
+          <CommentButton label={threadDetail.comments.length} />
         </div>
       </div>
       <div>

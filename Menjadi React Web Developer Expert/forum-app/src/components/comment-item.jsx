@@ -1,5 +1,6 @@
+import DownVoteButton from '@/components/down-vote-button';
+import UpVoteButton from '@/components/up-vote-button';
 import { postedAt } from '@/utils';
-import { ThumbsDown, ThumbsUp } from 'lucide-react';
 
 export default function CommentItem({ comment }) {
   return (
@@ -26,14 +27,8 @@ export default function CommentItem({ comment }) {
           />
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
-          <div className="flex gap-1 items-center">
-            <ThumbsUp className="w-4 h-4" />
-            <p className="text-xs">{comment.upVotesBy.length}</p>
-          </div>
-          <div className="flex gap-1 items-center">
-            <ThumbsDown className="w-4 h-4" />
-            <p className="text-xs">{comment.downVotesBy.length}</p>
-          </div>
+          <UpVoteButton label={comment.upVotesBy.length} />
+          <DownVoteButton label={comment.downVotesBy.length} />
         </div>
       </div>
     </div>

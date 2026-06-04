@@ -1,6 +1,9 @@
+import CommentButton from '@/components/comment-button';
+import DownVoteButton from '@/components/down-vote-button';
 import SubtleBadge from '@/components/subtle-badge';
+import UpVoteButton from '@/components/up-vote-button';
 import { postedAt } from '@/utils';
-import { Hash, MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Hash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function ThreadItem({ thread }) {
@@ -35,18 +38,9 @@ export default function ThreadItem({ thread }) {
             />
           </div>
           <div className="flex gap-3 items-center text-muted-foreground">
-            <div className="flex gap-1 items-center">
-              <ThumbsUp className="w-4 h-4" />
-              <p className="text-xs">{thread.upVotesBy.length}</p>
-            </div>
-            <div className="flex gap-1 items-center">
-              <ThumbsDown className="w-4 h-4" />
-              <p className="text-xs">{thread.downVotesBy.length}</p>
-            </div>
-            <div className="flex gap-1 items-center">
-              <MessageCircle className="w-4 h-4" />
-              <p className="text-xs">{thread.totalComments}</p>
-            </div>
+            <UpVoteButton label={thread.upVotesBy.length} />
+            <DownVoteButton label={thread.downVotesBy.length} />
+            <CommentButton label={thread.totalComments} />
           </div>
         </div>
       </Link>
