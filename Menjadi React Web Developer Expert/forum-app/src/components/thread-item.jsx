@@ -16,7 +16,7 @@ export default function ThreadItem({ thread, upVote, downVote, neutralVote }) {
   const onUpVoteClick = (event) => {
     event.stopPropagation();
     if (!thread.authUser) {
-      alert('Sign in to up vote thread.');
+      alert('Sign in to up vote thread');
     } else {
       if (!thread.upVotesBy.includes(thread.authUser)) {
         upVote(thread.id);
@@ -30,7 +30,7 @@ export default function ThreadItem({ thread, upVote, downVote, neutralVote }) {
     event.stopPropagation();
 
     if (!thread.authUser) {
-      alert('Sign in to up vote thread.');
+      alert('Sign in to up vote thread');
     } else {
       if (!thread.downVotesBy.includes(thread.authUser)) {
         downVote(thread.id);

@@ -16,6 +16,11 @@ import { ChevronLeft, Hash } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import {
+  asyncDownVoteThread,
+  asyncNeutralVoteThread,
+  asyncUpVoteThread,
+} from '@/states/threads/action';
 
 export default function DetailThreadPage() {
   const { id } = useParams();
@@ -28,6 +33,30 @@ export default function DetailThreadPage() {
 
   const onAddComment = ({ threadId, content }) => {
     dispatch(asyncAddComment({ threadId, content }));
+  };
+
+  const onUpVoteClick = () => {
+    if (!authUser) {
+      alert('Sign in to up vote thread');
+    } else {
+      if (!threadDetail.upVotesBy.includes(authUser.id)) {
+        dispatch(asyncUpVoteThread(threadDetail.id));
+      } else {
+        dispatch(asyncNeutralVoteThread(threadDetail.id));
+      }
+    }
+  };
+
+  const onDownVoteClick = () => {
+    if (!authUser) {
+      alert('Sign in to up vote thread');
+    } else {
+      if (!threadDetail.downVotesBy.includes(authUser.id)) {
+        dispatch(asyncDownVoteThread(threadDetail.id));
+      } else {
+        dispatch(asyncNeutralVoteThread(threadDetail.id));
+      }
+    }
   };
 
   useEffect(() => {
@@ -73,8 +102,18 @@ export default function DetailThreadPage() {
           />
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
-          <UpVoteButton label={threadDetail.upVotesBy.length} />
-          <DownVoteButton label={threadDetail.downVotesBy.length} />
+          <div onClick={onUpVoteClick}>
+            <UpVoteButton
+              label={threadDetail.upVotesBy.length}
+              upVoted={threadDetail.upVotesBy.includes(authUser.id)}
+            />
+          </div>
+          <div onClick={onDownVoteClick}>
+            <DownVoteButton
+              label={threadDetail.downVotesBy.length}
+              downVoted={threadDetail.downVotesBy.includes(authUser.id)}
+            />
+          </div>
           <CommentButton label={threadDetail.comments.length} />
         </div>
       </div>
