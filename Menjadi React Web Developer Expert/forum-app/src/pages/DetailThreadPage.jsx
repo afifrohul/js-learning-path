@@ -9,7 +9,10 @@ import { Separator } from '@/components/ui/separator';
 import UpVoteButton from '@/components/up-vote-button';
 import {
   asyncAddComment,
+  asyncDownVoteComment,
+  asyncNeutralVoteComment,
   asyncReceiveThreadDetail,
+  asyncUpVoteComment,
 } from '@/states/threadDetail/action';
 import { postedAt } from '@/utils';
 import { ChevronLeft, Hash } from 'lucide-react';
@@ -35,7 +38,7 @@ export default function DetailThreadPage() {
     dispatch(asyncAddComment({ threadId, content }));
   };
 
-  const onUpVoteClick = () => {
+  const onUpVoteThreadClick = () => {
     if (!authUser) {
       alert('Sign in to up vote thread');
     } else {
@@ -47,7 +50,7 @@ export default function DetailThreadPage() {
     }
   };
 
-  const onDownVoteClick = () => {
+  const onDownVoteThreadClick = () => {
     if (!authUser) {
       alert('Sign in to up vote thread');
     } else {
@@ -57,6 +60,18 @@ export default function DetailThreadPage() {
         dispatch(asyncNeutralVoteThread(threadDetail.id));
       }
     }
+  };
+
+  const onUpVoteComment = (commentId) => {
+    dispatch(asyncUpVoteComment({ threadId: threadDetail.id, commentId }));
+  };
+
+  const onDownVoteComment = (commentId) => {
+    dispatch(asyncDownVoteComment({ threadId: threadDetail.id, commentId }));
+  };
+
+  const onNeutralVoteComment = (commentId) => {
+    dispatch(asyncNeutralVoteComment({ threadId: threadDetail.id, commentId }));
   };
 
   useEffect(() => {
@@ -102,16 +117,16 @@ export default function DetailThreadPage() {
           />
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
-          <div onClick={onUpVoteClick}>
+          <div onClick={onUpVoteThreadClick}>
             <UpVoteButton
               label={threadDetail.upVotesBy.length}
-              upVoted={threadDetail.upVotesBy.includes(authUser.id)}
+              upVotedThread={threadDetail.upVotesBy.includes(authUser.id)}
             />
           </div>
-          <div onClick={onDownVoteClick}>
+          <div onClick={onDownVoteThreadClick}>
             <DownVoteButton
               label={threadDetail.downVotesBy.length}
-              downVoted={threadDetail.downVotesBy.includes(authUser.id)}
+              downVotedThread={threadDetail.downVotesBy.includes(authUser.id)}
             />
           </div>
           <CommentButton label={threadDetail.comments.length} />
@@ -141,7 +156,14 @@ export default function DetailThreadPage() {
         </p>
         <div className="space-y-4">
           {threadDetail.comments.map((comment, index) => (
-            <CommentItem key={index} comment={comment} />
+            <CommentItem
+              key={index}
+              authUser={authUser}
+              comment={comment}
+              upVote={onUpVoteComment}
+              downVote={onDownVoteComment}
+              neutralVote={onNeutralVoteComment}
+            />
           ))}
         </div>
       </div>

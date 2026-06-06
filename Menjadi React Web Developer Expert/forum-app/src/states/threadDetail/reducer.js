@@ -42,6 +42,60 @@ function threadDetailReducer(threadDetail = null, action = {}) {
             )
           : threadDetail.downVotesBy,
       };
+    case ActionTypeDetailThread.UP_VOTE_COMMENT:
+      return {
+        ...threadDetail,
+        comments: threadDetail.comments.map((comment) => {
+          if (comment.id == action.payload.commentId) {
+            return {
+              ...comment,
+              upVotesBy: comment.upVotesBy.concat([action.payload.userId]),
+              downVotesBy: comment.downVotesBy.includes(action.payload.userId)
+                ? comment.downVotesBy.filter(
+                    (id) => id !== action.payload.userId,
+                  )
+                : comment.downVotesBy,
+            };
+          }
+          return threadDetail;
+        }),
+      };
+    case ActionTypeDetailThread.DOWN_VOTE_COMMENT:
+      return {
+        ...threadDetail,
+        comments: threadDetail.comments.map((comment) => {
+          if (comment.id == action.payload.commentId) {
+            return {
+              ...comment,
+              downVotesBy: comment.downVotesBy.concat([action.payload.userId]),
+              upVotesBy: comment.upVotesBy.includes(action.payload.userId)
+                ? comment.upVotesBy.filter((id) => id !== action.payload.userId)
+                : comment.upVotesBy,
+            };
+          }
+          return threadDetail;
+        }),
+      };
+    case ActionTypeDetailThread.NEUTRAL_VOTE_COMMENT:
+      return {
+        ...threadDetail,
+        comments: threadDetail.comments.map((comment) => {
+          if (comment.id == action.payload.commentId) {
+            return {
+              ...comment,
+              upVotesBy: comment.upVotesBy.includes(action.payload.userId)
+                ? comment.upVotesBy.filter((id) => id !== action.payload.userId)
+                : comment.upVotesBy,
+              downVotesBy: comment.downVotesBy.includes(action.payload.userId)
+                ? comment.downVotesBy.filter(
+                    (id) => id !== action.payload.userId,
+                  )
+                : comment.downVotesBy,
+            };
+          }
+          return threadDetail;
+        }),
+      };
     default:
       return threadDetail;
   }

@@ -2,7 +2,40 @@ import DownVoteButton from '@/components/down-vote-button';
 import UpVoteButton from '@/components/up-vote-button';
 import { postedAt } from '@/utils';
 
-export default function CommentItem({ comment }) {
+export default function CommentItem({
+  authUser,
+  comment,
+  upVote,
+  downVote,
+  neutralVote,
+}) {
+  const onUpVoteClick = (event) => {
+    event.stopPropagation();
+    if (!authUser) {
+      alert('Sign in to up vote comment');
+    } else {
+      if (!comment.upVotesBy.includes(authUser.id)) {
+        upVote(comment.id);
+      } else {
+        neutralVote(comment.id);
+      }
+    }
+  };
+
+  const onDownVoteClick = (event) => {
+    event.stopPropagation();
+
+    if (!authUser) {
+      alert('Sign in to up vote comment');
+    } else {
+      if (!comment.downVotesBy.includes(authUser.id)) {
+        downVote(comment.id);
+      } else {
+        neutralVote(comment.id);
+      }
+    }
+  };
+
   return (
     <div className="">
       <div className="space-y-4">
@@ -27,8 +60,18 @@ export default function CommentItem({ comment }) {
           />
         </div>
         <div className="flex gap-3 items-center text-muted-foreground">
-          <UpVoteButton label={comment.upVotesBy.length} />
-          <DownVoteButton label={comment.downVotesBy.length} />
+          <div onClick={onUpVoteClick}>
+            <UpVoteButton
+              label={comment.upVotesBy.length}
+              upVotedComment={comment.upVotesBy.includes(authUser.id)}
+            />
+          </div>
+          <div onClick={onDownVoteClick}>
+            <DownVoteButton
+              label={comment.downVotesBy.length}
+              downVotedComment={comment.downVotesBy.includes(authUser.id)}
+            />
+          </div>
         </div>
       </div>
     </div>

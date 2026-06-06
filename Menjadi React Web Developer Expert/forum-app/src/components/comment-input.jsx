@@ -3,7 +3,6 @@ import { Field, FieldGroup } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import useInput from '@/hooks/useInput';
 
-
 export default function CommentInput({ createComment, threadId, loading }) {
   const [content, onContentChange, setContent] = useInput('');
 
@@ -30,7 +29,7 @@ export default function CommentInput({ createComment, threadId, loading }) {
               disabled={loading}
               className="w-fit"
             >
-              {loading ? 'Adding...' : 'Add'}
+              {loading ? 'Loading...' : 'Add'}
             </Button>
           </Field>
         </div>

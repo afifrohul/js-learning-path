@@ -76,13 +76,13 @@ export default function ThreadItem({ thread, upVote, downVote, neutralVote }) {
           <div onClick={onUpVoteClick}>
             <UpVoteButton
               label={thread.upVotesBy.length}
-              upVoted={thread.upVotesBy.includes(thread.authUser)}
+              upVotedThread={thread.upVotesBy.includes(thread.authUser)}
             />
           </div>
           <div onClick={onDownVoteClick}>
             <DownVoteButton
               label={thread.downVotesBy.length}
-              downVoted={thread.downVotesBy.includes(thread.authUser)}
+              downVotedThread={thread.downVotesBy.includes(thread.authUser)}
             />
           </div>
           <CommentButton label={thread.totalComments} />
