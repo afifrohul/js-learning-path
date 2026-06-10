@@ -18,7 +18,7 @@ export function SigninForm({ className, ...props }) {
   const onSignin = ({ email, password }) => {
     dispatch(asyncSetAuthUser({ email, password }));
 
-    navigate('/threads')
+    navigate('/')
   };
 
   return (
