@@ -36,6 +36,7 @@ export default function SigninInput({ signin }) {
           <Input
             id="password"
             type="password"
+            placeholder="password"
             required
             value={password}
             onChange={onPasswordChange}
